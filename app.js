@@ -8,6 +8,7 @@ var flash = require("connect-flash");
 
 var indexRouter = require("./routes/index");
 var userRouter = require("./routes/users");
+var unitRouter = require("./routes/units")
 
 var app = express();
 
@@ -25,6 +26,7 @@ app.use(flash())
 
 app.use("/", indexRouter);
 app.use("/users", userRouter)
+app.use("/units", unitRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

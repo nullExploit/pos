@@ -38,18 +38,18 @@ function postIndex(req, res) {
 
 function getUser(req, res) {
   User.all().then((datas) => {
-    res.render("users/users", { datas, username: req.session.user.name });
+    res.render("users/view", { datas, username: req.session.user.name });
   });
 }
 
 function getAddUser(req, res) {
-  res.render("users/userForm", { data: {}, username: req.session.user.name });
+  res.render("users/form", { data: {}, username: req.session.user.name });
 }
 
 function getEditUser(req, res) {
   const id = req.params.id;
   User.getId(id).then((data) => {
-    res.render("users/userForm", { data, username: req.session.user.name });
+    res.render("users/form", { data, username: req.session.user.name });
   });
 }
 
