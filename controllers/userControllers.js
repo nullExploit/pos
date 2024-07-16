@@ -7,13 +7,6 @@ function getIndex(req, res) {
   });
 }
 
-function getRegister(req, res) {
-  res.render("register", {
-    failedMessage: req.flash("failedMessage"),
-    successMessage: req.flash("successMessage"),
-  });
-}
-
 function postIndex(req, res) {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -21,7 +14,7 @@ function postIndex(req, res) {
     res.redirect("/");
   } else {
     User.get(email).then((data) => {
-      if (!data) {
+      if (!data.email) {
         req.flash("failedMessage", "User not found!");
         res.redirect("/");
       } else {
@@ -43,36 +36,52 @@ function postIndex(req, res) {
   }
 }
 
-function postRegister(req, res) {
-  const { firstName, lastName, email, password, retypePassword } = req.body;
-  if (!firstName || !lastName || !email || !password || !retypePassword) {
-    req.flash("failedMessage", "Fill the field");
-    res.redirect("/register");
-  } else {
-    const fullName = `${firstName} ${lastName}`
-      .split(" ")
-      .map((name) => {
-        return name.replace(name[0], name[0].toUpperCase());
-      })
-      .join(" ");
-
-    User.get(email).then((data) => {
-      if (data.email) {
-        req.flash("failedMessage", "Email already taken!");
-        res.redirect("/register");
-      } else {
-        if (password != retypePassword) {
-          req.flash("failedMessage", "Password does'nt match!");
-          res.redirect("/register");
-        } else {
-          User.register(email, fullName, password).then(
-            req.flash("successMessage", "Please log in here"),
-            res.redirect("/")
-          );
-        }
-      }
-    });
-  }
+function getUser(req, res) {
+  User.all().then((datas) => {
+    res.render("users/users", { datas, username: req.session.user.name });
+  });
 }
 
-module.exports = { getIndex, getRegister, postIndex, postRegister };
+function getAddUser(req, res) {
+  res.render("users/userForm", { data: {}, username: req.session.user.name });
+}
+
+function getEditUser(req, res) {
+  const id = req.params.id;
+  User.getId(id).then((data) => {
+    res.render("users/userForm", { data, username: req.session.user.name });
+  });
+}
+
+function addUser(req, res) {
+  const { email, name, password, role } = req.body;
+
+  User.register(email, name, password, role).then(() => {
+    res.redirect("/users");
+  });
+}
+
+function editUser(req, res) {
+  const id = req.params.id;
+  const { email, name, role } = req.body;
+
+  User.update(id, email, name, role).then(() => {
+    res.redirect("/users");
+  });
+}
+
+function deleteUser(req, res) {
+  const id = req.params.id;
+  User.del(id).then(res.redirect("/users"));
+}
+
+module.exports = {
+  getIndex,
+  postIndex,
+  addUser,
+  getEditUser,
+  getUser,
+  getAddUser,
+  editUser,
+  deleteUser,
+};
