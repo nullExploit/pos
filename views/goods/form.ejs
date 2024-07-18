@@ -92,10 +92,17 @@
                                                 <label for="inputPicture" class="col-sm-2 col-form-label">Picture</label>
                                                 <div class="custom-file col-sm-10">
                                                     <label class="custom-file-label" for="inputPicture" style="margin: 0 12px 8px;">Choose file...</label>
-                                                    <input type="file" class="custom-file-input" id="inputPicture" placeholder="0" name="goodPicture" accept="image/*" onchange="loadFile(event), console.log(event)" value="" required>
+                                                    <input type="file" class="custom-file-input" id="inputPicture" name="goodPicture" accept="image/*" onchange="loadFile(event)"  <%= data.barcode ? "" : "required" %>>
                                                 </div>
                                             </div>
-                                            <div class="mb-3 row" id="previewContainer"></div>
+                                            <div class="mb-3 row" id="previewContainer">
+                                                <% if (data.barcode) { %>
+                                                    <label for="preview" class="col-sm-2 col-form-label">Preview</label>
+                                                    <div class="col-sm-5">
+                                                        <img src="/uploads/<%= data.picture %>" id="preview" alt="preview" class="img-fluid">
+                                                    </div>
+                                                <% } %>
+                                            </div>
                                         </div>
                                         
                                         <div class="card-footer">

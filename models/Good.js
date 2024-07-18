@@ -70,19 +70,34 @@ class Good {
     picture
   ) {
     try {
-      await db.query(
-        "UPDATE goods SET barcode = $1, name = $2, stock = $3, purchaseprice = $4, sellingprice = $5, unit = $6, picture = $7 WHERE barcode = $8",
-        [
-          newBarcode,
-          name,
-          stock,
-          purchaseprice,
-          sellingprice,
-          unit,
-          picture,
-          oldBarcode,
-        ]
-      );
+      if (picture) {
+        await db.query(
+          "UPDATE goods SET barcode = $1, name = $2, stock = $3, purchaseprice = $4, sellingprice = $5, unit = $6, picture = $7 WHERE barcode = $8",
+          [
+            newBarcode,
+            name,
+            stock,
+            purchaseprice,
+            sellingprice,
+            unit,
+            picture,
+            oldBarcode,
+          ]
+        );
+      } else {
+        await db.query(
+          "UPDATE goods SET barcode = $1, name = $2, stock = $3, purchaseprice = $4, sellingprice = $5, unit = $6 WHERE barcode = $7",
+          [
+            newBarcode,
+            name,
+            stock,
+            purchaseprice,
+            sellingprice,
+            unit,
+            oldBarcode,
+          ]
+        );
+      }
     } catch (e) {
       console.log(e);
     }
