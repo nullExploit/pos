@@ -62,20 +62,34 @@ function editGood(req, res) {
   const id = req.params.id;
   const { barcode, name, stock, purchaseprice, sellingprice, unit } = req.body;
 
-  for (let file of readdirSync(
-    path.join(__dirname, "..", "public", "uploads")
-  )) {
-    if (file.split("-")[1] == id) {
-      unlinkSync(path.join(__dirname, "..", "public", "uploads", file));
-    }
-  }
-
-  const file = req.files.goodPicture;
-  const filename = `${Date.now()}-${barcode}-${file.name}`;
+  const file = req.files?.goodPicture;
+  const filename = `${Date.now()}-${barcode}-${file?.name}`;
   const filepath = path.join(__dirname, "..", "public", "uploads", filename);
 
-  file.mv(filepath, (e) => {
-    if (e) return console.log(e);
+  if (file) {
+    for (let file of readdirSync(
+      path.join(__dirname, "..", "public", "uploads")
+    )) {
+      if (file.split("-")[1] == id) {
+        unlinkSync(path.join(__dirname, "..", "public", "uploads", file));
+      }
+    }
+    file.mv(filepath, (e) => {
+      if (e) return console.log(e);
+      Good.update(
+        barcode,
+        id,
+        name,
+        stock,
+        purchaseprice,
+        sellingprice,
+        unit,
+        filename
+      ).then(() => {
+        res.redirect("/goods");
+      });
+    });
+  } else {
     Good.update(
       barcode,
       id,
@@ -83,12 +97,11 @@ function editGood(req, res) {
       stock,
       purchaseprice,
       sellingprice,
-      unit,
-      filename
+      unit
     ).then(() => {
       res.redirect("/goods");
     });
-  });
+  }
 }
 
 function deleteGood(req, res) {

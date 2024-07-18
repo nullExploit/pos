@@ -62,18 +62,20 @@
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
-                                                <label for="inputPurchaseprice"
-                                                    class="col-sm-2 col-form-label">Purchase Price</label>
+                                                <label for="inputPurchaseprice" class="col-sm-2 col-form-label">Purchase
+                                                    Price</label>
                                                 <div class="col-sm-10">
                                                     <input type="number" class="form-control" id="inputPurchaseprice"
                                                         placeholder="0" name="purchaseprice"
-                                                        value="<%= data.purchaseprice %>" step="0.01"  required>
+                                                        value="<%= data.purchaseprice %>" step="0.01" required>
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
-                                                <label for="inputSellingprice" class="col-sm-2 col-form-label">Selling Price</label>
+                                                <label for="inputSellingprice" class="col-sm-2 col-form-label">Selling
+                                                    Price</label>
                                                 <div class="col-sm-10">
-                                                    <input type="number" class="form-control" id="inputSellingprice" placeholder="0" name="sellingprice"
+                                                    <input type="number" class="form-control" id="inputSellingprice"
+                                                        placeholder="0" name="sellingprice"
                                                         value="<%= data.sellingprice %>" step="0.01" required>
                                                 </div>
                                             </div>
@@ -82,22 +84,37 @@
                                                 <div class="col-sm-10">
                                                     <select id="inputUnit" class="form-control" name="unit" required>
                                                         <option value="" selected>- Select Unit -</option>
-                                                        <% dataUnit.forEach(unitdata => { %>
-                                                        <option value="<%= unitdata.unit %>" <%= data.unit == unitdata.unit ? "selected" : ""%>><%= unitdata.unit %></option>
-                                                        <% })%>
+                                                        <% dataUnit.forEach(unitdata=> { %>
+                                                            <option value="<%= unitdata.unit %>"
+                                                                <%=data.unit==unitdata.unit ? "selected" : "" %>><%=
+                                                                    unitdata.unit %>
+                                                            </option>
+                                                            <% })%>
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
-                                                <label for="inputPicture" class="col-sm-2 col-form-label">Picture</label>
+                                                <label for="inputPicture"
+                                                    class="col-sm-2 col-form-label">Picture</label>
                                                 <div class="custom-file col-sm-10">
-                                                    <label class="custom-file-label" for="inputPicture" style="margin: 0 12px 8px;">Choose file...</label>
-                                                    <input type="file" class="custom-file-input" id="inputPicture" placeholder="0" name="goodPicture" accept="image/*" onchange="loadFile(event), console.log(event)" value="" required>
+                                                    <label class="custom-file-label" for="inputPicture"
+                                                        style="margin: 0 12px 8px;">Choose file...</label>
+                                                    <input type="file" class="custom-file-input" id="inputPicture"
+                                                        name="goodPicture" accept="image/*" onchange="loadFile(event)"
+                                                        <%=data.barcode ? "" : "required" %>>
                                                 </div>
                                             </div>
-                                            <div class="mb-3 row" id="previewContainer"></div>
+                                            <div class="mb-3 row" id="previewContainer">
+                                                <% if (data.barcode) { %>
+                                                    <label for="preview" class="col-sm-2 col-form-label">Preview</label>
+                                                    <div class="col-sm-5">
+                                                        <img src="/uploads/<%= data.picture %>" id="preview"
+                                                            alt="preview" class="img-fluid">
+                                                    </div>
+                                                    <% } %>
+                                            </div>
                                         </div>
-                                        
+
                                         <div class="card-footer">
                                             <div class="col-sm-5">
                                                 <button type="submit" class="btn btn-success btn-icon-split">
