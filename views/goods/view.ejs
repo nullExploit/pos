@@ -1,0 +1,173 @@
+<%- include('../partials/header') %>
+    <title>POS - Goods</title>
+    <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+    </head>
+
+    <body id="page-top">
+
+        <!-- Page Wrapper -->
+        <div id="wrapper">
+
+            <!-- Sidebar -->
+            <%- include('../partials/sidebar') %>
+                <!-- End of Sidebar -->
+
+                <!-- Content Wrapper -->
+                <div id="content-wrapper" class="d-flex flex-column">
+
+                    <!-- Main Content -->
+                    <div id="content">
+
+                        <!-- Topbar -->
+                        <%- include('../partials/topbar') %>
+                            <!-- End of Topbar -->
+
+                            <!-- Begin Page Content -->
+                            <div class="container-fluid">
+
+                                <!-- Page Heading -->
+                                <h1 class="h3 mb-2 text-gray-800">Goods</h1>
+                                <p class="mb-4">This is data of Goods</p>
+
+                                <!-- DataTales Example -->
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3">
+                                        <a href="/goods/add" class="btn btn-primary btn-icon-split">
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-fw fa-plus"></i>
+                                            </span>
+                                            <span class="text">Add</span>
+                                        </a>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="dataTable" width="100%"
+                                                cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Barcode</th>
+                                                        <th>Name</th>
+                                                        <th>Stock</th>
+                                                        <th>Unit</th>
+                                                        <th>Purchase Price</th>
+                                                        <th>Selling Price</th>
+                                                        <th>Picture</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>Barcode</th>
+                                                        <th>Name</th>
+                                                        <th>Stock</th>
+                                                        <th>Unit</th>
+                                                        <th>Purchase Price</th>
+                                                        <th>Selling Price</th>
+                                                        <th>Picture</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </tfoot>
+                                                <tbody>
+                                                    <% datas.forEach(data=> {%>
+                                                        <tr>
+                                                            <td>
+                                                                <%= data.barcode %>
+                                                            </td>
+                                                            <td>
+                                                                <%= data.name %>
+                                                            </td>
+                                                            <td>
+                                                                <%= data.stock %>
+                                                            </td>
+                                                            <td>
+                                                                <%= data.unit %>
+                                                            </td>
+                                                            <td>
+                                                                Rp <%=
+                                                                    Number(data.purchaseprice).toLocaleString('in').includes(",")
+                                                                    ? Number(data.purchaseprice).toLocaleString('in') :
+                                                                    Number(data.purchaseprice).toLocaleString('in')
+                                                                    + ",00" %>
+                                                            </td>
+                                                            <td>
+                                                                Rp <%=
+                                                                    Number(data.sellingprice).toLocaleString('in').includes(",")
+                                                                    ? Number(data.sellingprice).toLocaleString('in') :
+                                                                    Number(data.sellingprice).toLocaleString('in')
+                                                                    + ",00" %>
+                                                            </td>
+                                                            <td>
+                                                                <img src="/uploads/<%= data.picture%>" width="200"
+                                                                    alt="">
+                                                            </td>
+                                                            <td>
+                                                                <a href="/goods/edit/<%= data.barcode %>"
+                                                                    class="btn btn-success btn-circle"><i
+                                                                        class="fas fa-fw fa-info-circle"></i></a>
+                                                                <a href="/goods/delete/<%= data.barcode %>"
+                                                                    class="btn btn-danger btn-circle"
+                                                                    data-toggle="modal"
+                                                                    data-target="#deleteModal<%= data.barcode %>"><i
+                                                                        class="fas fa-fw fa-trash"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                        <div class="modal fade" id="deleteModal<%= data.barcode %>"
+                                                            tabindex="-1" role="dialog"
+                                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="exampleModalLabel">
+                                                                            Delete Confirmation</h5>
+                                                                        <button class="close" type="button"
+                                                                            data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">×</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        Are you sure, you want to delete it?
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button class="btn btn-secondary" type="button"
+                                                                            data-dismiss="modal">No</button>
+                                                                        <a class="btn btn-primary"
+                                                                            href="/goods/delete/<%= data.barcode %>">Yes</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <% }) %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- /.container-fluid -->
+
+                    </div>
+                    <!-- End of Main Content -->
+
+                    <!-- Footer -->
+                    <!-- End of Footer -->
+
+                </div>
+                <!-- End of Content Wrapper -->
+
+        </div>
+        <!-- End of Page Wrapper -->
+
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+
+
+
+
+        <!-- Logout Modal-->
+        <%- include('../partials/logout') %>
+
+            <%- include('../partials/footer') %>

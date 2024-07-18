@@ -9,12 +9,14 @@ const {
 } = require("../controllers/unitControllers");
 var router = express.Router();
 
-router.get("/", getUnit);
-router.get("/add", getAddUnit);
-router.get("/edit/:id", getEditUnit);
-router.get("/delete/:id", deleteUnit);
+const hasSession = require("../helper/util");
 
-router.post("/add", addUnit);
-router.post("/edit/:id", editUnit);
+router.get("/", hasSession, getUnit);
+router.get("/add", hasSession, getAddUnit);
+router.get("/edit/:id", hasSession, getEditUnit);
+router.get("/delete/:id", hasSession, deleteUnit);
+
+router.post("/add", hasSession, addUnit);
+router.post("/edit/:id", hasSession, editUnit);
 
 module.exports = router;

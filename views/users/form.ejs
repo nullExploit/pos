@@ -39,14 +39,14 @@
                                                 <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
                                                 <div class="col-sm-10">
                                                     <input type="email" class="form-control" id="inputEmail"
-                                                        placeholder="Enter email address..." name="email" value="<%= data.email %>">
+                                                        placeholder="Enter email address..." name="email" value="<%= data.email %>" required>
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
                                                 <label for="inputName" class="col-sm-2 col-form-label">Name</label>
                                                 <div class="col-sm-10">
                                                     <input type="text" class="form-control" id="inputName"
-                                                        placeholder="Enter your name..." name="name" value="<%= data.name %>">
+                                                        placeholder="Enter your name..." name="name" value="<%= data.name %>" required>
                                                 </div>
                                             </div>
                                             <% if (!data.userid) { %>
@@ -55,7 +55,7 @@
                                                     class="col-sm-2 col-form-label">Password</label>
                                                 <div class="col-sm-10">
                                                     <input type="password" class="form-control" id="inputPassword"
-                                                        placeholder="Password" name="password">
+                                                        placeholder="Password" name="password" required>
                                                 </div>
                                             </div>
                                             <% }%>

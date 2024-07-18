@@ -1,0 +1,136 @@
+<%- include('../partials/header') %>
+
+    <title>POS - Goods</title>
+
+    </head>
+
+    <body id="page-top">
+
+        <!-- Page Wrapper -->
+        <div id="wrapper">
+
+            <%- include('../partials/sidebar') %>
+
+                <!-- Content Wrapper -->
+                <div id="content-wrapper" class="d-flex flex-column">
+
+                    <!-- Main Content -->
+                    <div id="content">
+
+                        <!-- Topbar -->
+                        <%- include('../partials/topbar') %>
+                            <!-- End of Topbar -->
+
+                            <!-- Begin Page Content -->
+                            <div class="container-fluid">
+
+                                <!-- Page Heading -->
+                                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                                    <h1 class="h3 mb-0 text-gray-800">Goods</h1>
+                                </div>
+
+                                <div class="card shadow mb-4">
+                                    <form method="post" autocomplete="off" enctype="multipart/form-data">
+                                        <div class="card-header py-3">
+                                            <h6 class="m-0 font-weight-bold text-primary">
+                                                <%= data.barcode ? "Form Edit" : "Form Add" %>
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-3 row">
+                                                <label for="inputBarcode"
+                                                    class="col-sm-2 col-form-label">Barcode</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="inputBarcode"
+                                                        placeholder="Enter Barcode..." name="barcode"
+                                                        value="<%= data.barcode %>" required>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 row">
+                                                <label for="inputName" class="col-sm-2 col-form-label">Name</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="inputName"
+                                                        placeholder="Enter Goods name..." name="name"
+                                                        value="<%= data.name %>" required>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 row">
+                                                <label for="inputStock" class="col-sm-2 col-form-label">Stock</label>
+                                                <div class="col-sm-10">
+                                                    <input type="number" class="form-control" id="inputStock"
+                                                        placeholder="0" name="stock" value="<%= data.stock %>" required>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 row">
+                                                <label for="inputPurchaseprice"
+                                                    class="col-sm-2 col-form-label">Purchase Price</label>
+                                                <div class="col-sm-10">
+                                                    <input type="number" class="form-control" id="inputPurchaseprice"
+                                                        placeholder="0" name="purchaseprice"
+                                                        value="<%= data.purchaseprice %>" step="0.01"  required>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 row">
+                                                <label for="inputSellingprice" class="col-sm-2 col-form-label">Selling Price</label>
+                                                <div class="col-sm-10">
+                                                    <input type="number" class="form-control" id="inputSellingprice" placeholder="0" name="sellingprice"
+                                                        value="<%= data.sellingprice %>" step="0.01" required>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 row">
+                                                <label for="inputUnit" class="col-sm-2 col-form-label">Unit</label>
+                                                <div class="col-sm-10">
+                                                    <select id="inputUnit" class="form-control" name="unit" required>
+                                                        <option value="" selected>- Select Unit -</option>
+                                                        <% dataUnit.forEach(unitdata => { %>
+                                                        <option value="<%= unitdata.unit %>" <%= data.unit == unitdata.unit ? "selected" : ""%>><%= unitdata.unit %></option>
+                                                        <% })%>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 row">
+                                                <label for="inputPicture" class="col-sm-2 col-form-label">Picture</label>
+                                                <div class="custom-file col-sm-10">
+                                                    <label class="custom-file-label" for="inputPicture" style="margin: 0 12px 8px;">Choose file...</label>
+                                                    <input type="file" class="custom-file-input" id="inputPicture" placeholder="0" name="goodPicture" accept="image/*" onchange="loadFile(event), console.log(event)" value="" required>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 row" id="previewContainer"></div>
+                                        </div>
+                                        
+                                        <div class="card-footer">
+                                            <div class="col-sm-5">
+                                                <button type="submit" class="btn btn-success btn-icon-split">
+                                                    <span class="icon text-white-50">
+                                                        <i class="fas fa-fw fa-database"></i>
+                                                    </span>
+                                                    <span class="text">Save</span>
+                                                </button>
+                                                <a href="/goods" class="btn btn-warning btn-icon-split">
+                                                    <span class="icon text-white-50">
+                                                        <i class="fas fa-fw fa-undo-alt"></i>
+                                                    </span>
+                                                    <span class="text">Back</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                            <!-- End of Content Wrapper -->
+
+                    </div>
+                    <!-- End of Page Wrapper -->
+
+                    <%- include('../partials/copyright') %>
+
+                        <!-- Scroll to Top Button-->
+                        <a class="scroll-to-top rounded" href="#page-top">
+                            <i class="fas fa-angle-up"></i>
+                        </a>
+
+                        <!-- Logout Modal-->
+                        <%- include('../partials/logout') %>
+
+                            <%- include('../partials/footer') %>

@@ -5,10 +5,12 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var session = require("express-session");
 var flash = require("connect-flash");
+var fileUpload = require("express-fileupload")
 
 var indexRouter = require("./routes/index");
 var userRouter = require("./routes/users");
 var unitRouter = require("./routes/units")
+var goodRouter = require("./routes/goods")
 
 var app = express();
 
@@ -23,10 +25,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(session({ secret: "rishad", saveUninitialized: true, resave: false }));
 app.use(flash())
+app.use(fileUpload())
 
 app.use("/", indexRouter);
 app.use("/users", userRouter)
 app.use("/units", unitRouter)
+app.use("/goods", goodRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

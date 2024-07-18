@@ -10293,7 +10293,7 @@
      *
      *  @name DataTable.defaults.columnDefs
      */
-    aoColumnDefs: null,
+    aoColumnDefs: [{ bSortable: false, aTargets: [-2] }],
 
     /**
      * Basically the same as `search`, this parameter defines the individual column
