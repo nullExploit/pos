@@ -1,0 +1,98 @@
+<%- include('../partials/header') %>
+
+    <title>POS - Suppliers</title>
+
+    </head>
+
+    <body id="page-top">
+
+        <!-- Page Wrapper -->
+        <div id="wrapper">
+
+            <%- include('../partials/sidebar') %>
+
+                <!-- Content Wrapper -->
+                <div id="content-wrapper" class="d-flex flex-column">
+
+                    <!-- Main Content -->
+                    <div id="content">
+
+                        <!-- Topbar -->
+                        <%- include('../partials/topbar') %>
+                            <!-- End of Topbar -->
+
+                            <!-- Begin Page Content -->
+                            <div class="container-fluid">
+
+                                <!-- Page Heading -->
+                                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                                    <h1 class="h3 mb-0 text-gray-800">Suppliers</h1>
+                                </div>
+
+                                <div class="card shadow mb-4">
+                                    <form method="post" autocomplete="off">
+                                        <div class="card-header py-3">
+                                            <h6 class="m-0 font-weight-bold text-primary">
+                                                <%= data.supplierid ? "Form Edit" : "Form Add" %>
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-3 row">
+                                                <label for="inputName" class="col-sm-2 col-form-label">Name</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="inputName"
+                                                        placeholder="Enter Supplier Name..." name="name"
+                                                        value="<%= data.name %>" required>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 row">
+                                                <label for="inputAddress" class="col-sm-2 col-form-label">Address</label>
+                                                <div class="col-sm-10">
+                                                    <textarea name="address" id="inputAddress" class="form-control"
+                                                        placeholder="Enter Supplier Address..." required><%= data.address %></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 row">
+                                                <label for="inputPhone" class="col-sm-2 col-form-label">Phone</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="inputPhone" placeholder="Enter Supplier Phone..." name="phone"
+                                                        value="<%= data.phone %>" onkeypress="return event.charCode >= 48 && event.charCode <= 57" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="col-sm-5">
+                                                <button type="submit" class="btn btn-success btn-icon-split">
+                                                    <span class="icon text-white-50">
+                                                        <i class="fas fa-fw fa-database"></i>
+                                                    </span>
+                                                    <span class="text">Save</span>
+                                                </button>
+                                                <a href="/suppliers" class="btn btn-warning btn-icon-split">
+                                                    <span class="icon text-white-50">
+                                                        <i class="fas fa-fw fa-undo-alt"></i>
+                                                    </span>
+                                                    <span class="text">Back</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                            <!-- End of Content Wrapper -->
+
+                    </div>
+                    <!-- End of Page Wrapper -->
+
+                    <%- include('../partials/copyright') %>
+
+                        <!-- Scroll to Top Button-->
+                        <a class="scroll-to-top rounded" href="#page-top">
+                            <i class="fas fa-angle-up"></i>
+                        </a>
+
+                        <!-- Logout Modal-->
+                        <%- include('../partials/logout') %>
+
+                            <%- include('../partials/footer') %>
