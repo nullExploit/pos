@@ -19,10 +19,82 @@ class Good {
     this.picture = picture;
   }
 
-  static async all() {
+  static async all(
+    barcode,
+    name,
+    stock,
+    purchaseprice,
+    sellingprice,
+    unit,
+    page,
+    limit,
+    offset,
+    sortBy,
+    sortMode
+  ) {
     try {
-      const datas = await db.query("SELECT * FROM goods");
-      return datas.rows;
+      const queryParams = [];
+      const params = [];
+      let sql = "SELECT COUNT(*) AS total FROM goods";
+
+      const realTotal = await db.query(sql);
+
+      if (barcode) {
+        queryParams.push(
+          `barcode LIKE '%' || $${queryParams.length + 1} || '%'`
+        );
+        params.push(barcode);
+      }
+
+      if (name) {
+        queryParams.push(`name LIKE '%' || $${queryParams.length + 1} || '%'`);
+        params.push(name);
+      }
+
+      if (stock) {
+        queryParams.push(`CAST(stock AS TEXT) LIKE '%' || $${queryParams.length + 1} || '%'`);
+        params.push(stock);
+      }
+
+      if (purchaseprice) {
+        queryParams.push(`CAST(purchaseprice AS TEXT) LIKE '%' || $${queryParams.length + 1} || '%'`);
+        params.push(purchaseprice);
+      }
+
+      if (sellingprice) {
+        queryParams.push(`CAST(sellingprice AS TEXT) LIKE '%' || $${queryParams.length + 1} || '%'`);
+        params.push(stock);
+      }
+
+      if (unit) {
+        queryParams.push(`unit LIKE '%' || $${queryParams.length + 1} || '%'`);
+        params.push(unit);
+      }
+
+      if (queryParams.length) sql += ` WHERE ${queryParams.join(" OR ")}`;
+
+      const filteredTotal = await db.query(sql, params);
+
+      sql = "SELECT * FROM goods";
+
+      if (queryParams.length) sql += ` WHERE ${queryParams.join(" OR ")}`;
+
+      sql += ` ORDER BY ${sortBy} ${sortMode}`;
+
+      if (limit) {
+        sql += ` limit $${queryParams.length + 1} offset $${
+          queryParams.length + 2
+        }`;
+        params.push(limit, offset);
+      }
+
+      const datas = await db.query(sql, params);
+      return {
+        draw: Number(page),
+        recordsTotal: Number(realTotal.rows[0].total),
+        recordsFiltered: Number(filteredTotal.rows[0].total),
+        data: datas.rows,
+      };
     } catch (e) {
       console.log(e);
     }

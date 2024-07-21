@@ -9,10 +9,67 @@ class User {
     this.role = role;
   }
 
-  static async all() {
+  static async all(id, email, name, role, page, limit, offset, sortBy, sortMode) {
     try {
-      const datas = await db.query("SELECT * FROM users");
-      return datas.rows;
+      const queryParams = [];
+      const params = [];
+      let sql = "SELECT COUNT(*) AS total FROM users";
+
+      const realTotal = await db.query(sql);
+
+      if (id) {
+        queryParams.push(`CAST(userid AS TEXT) LIKE '%' || $${queryParams.length + 1} || '%'`);
+        params.push(id);
+      }
+
+      if (email) {
+        queryParams.push(`email LIKE '%' || $${queryParams.length + 1} || '%'`);
+        params.push(email);
+      }
+
+      if (name) {
+        queryParams.push(`name LIKE '%' || $${queryParams.length + 1} || '%'`);
+        params.push(name);
+      }
+
+      if (role) {
+        queryParams.push(`role LIKE '%' || $${queryParams.length + 1} || '%'`);
+        params.push(role);
+      }
+
+      if (queryParams.length) sql += ` WHERE ${queryParams.join(" OR ")}`;
+
+      const filteredTotal = await db.query(sql, params);
+
+      sql = "SELECT userid, email, name, role FROM users";
+
+      if (queryParams.length) sql += ` WHERE ${queryParams.join(" OR ")}`;
+
+      sql += ` ORDER BY ${sortBy} ${sortMode}`;
+
+      if (limit) {
+        sql += ` limit $${queryParams.length + 1} offset $${
+          queryParams.length + 2
+        }`;
+        params.push(limit, offset);
+      }
+
+      const datas = await db.query(sql, params);
+      return {
+        draw: Number(page),
+        recordsTotal: Number(realTotal.rows[0].total),
+        recordsFiltered: Number(filteredTotal.rows[0].total),
+        data: datas.rows,
+      };
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  static async query(query) {
+    try {
+      const result = await db.query(query);
+      return result
     } catch (e) {
       console.log(e);
     }

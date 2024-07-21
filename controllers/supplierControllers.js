@@ -1,9 +1,23 @@
 const Supplier = require("../models/Supplier");
 
 function getSupplier(req, res) {
-  Supplier.all().then((datas) => {
-    res.render("suppliers/view", { datas, username: req.session.user.name });
-  });
+  res.render("suppliers/view", { username: req.session.user.name });
+}
+
+async function getSupplierAPI(req, res) {
+  const { draw, length, start, search } = req.query;
+  const result = await Supplier.all(
+    search.value,
+    search.value,
+    search.value,
+    search.value,
+    draw,
+    length,
+    start,
+    req.query.columns[req.query.order[0].column].data,
+    req.query.order[0].dir
+  );
+  res.json(result);
 }
 
 function getAddSupplier(req, res) {
@@ -46,4 +60,5 @@ module.exports = {
   addSupplier,
   editSupplier,
   deleteSupplier,
+  getSupplierAPI
 };

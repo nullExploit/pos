@@ -52,64 +52,7 @@
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
-                                                <tfoot>
-                                                    <tr>
-                                                        <th>Unit</th>
-                                                        <th>Name</th>
-                                                        <th>Note</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </tfoot>
-                                                <tbody>
-                                                    <% datas.forEach(data=> {%>
-                                                        <tr>
-                                                            <td>
-                                                                <%= data.unit %>
-                                                            </td>
-                                                            <td>
-                                                                <%= data.name %>
-                                                            </td>
-                                                            <td>
-                                                                <%= data.note %>
-                                                            </td>
-                                                            <td>
-                                                                <a href="/units/edit/<%= data.unit %>"
-                                                                    class="btn btn-success btn-circle"><i
-                                                                        class="fas fa-fw fa-info-circle"></i></a>
-                                                                <a href="/units/delete/<%= data.unit %>"
-                                                                    class="btn btn-danger btn-circle"
-                                                                    data-toggle="modal"
-                                                                    data-target="#deleteModal<%= data.unit %>"><i
-                                                                        class="fas fa-fw fa-trash"></i></a>
-                                                            </td>
-                                                        </tr>
-                                                        <div class="modal fade" id="deleteModal<%= data.unit %>"
-                                                            tabindex="-1" role="dialog"
-                                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                            <div class="modal-dialog" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class="modal-title" id="exampleModalLabel">
-                                                                            Delete Confirmation</h5>
-                                                                        <button class="close" type="button"
-                                                                            data-dismiss="modal" aria-label="Close">
-                                                                            <span aria-hidden="true">×</span>
-                                                                        </button>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        Are you sure, you want to delete it?
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button class="btn btn-secondary" type="button"
-                                                                            data-dismiss="modal">No</button>
-                                                                        <a class="btn btn-primary"
-                                                                            href="/units/delete/<%= data.unit %>">Yes</a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <% }) %>
-                                                </tbody>
+                                                <tfoot id="foot"></tfoot>
                                             </table>
                                         </div>
                                     </div>

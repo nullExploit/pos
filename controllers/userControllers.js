@@ -37,9 +37,23 @@ function postIndex(req, res) {
 }
 
 function getUser(req, res) {
-  User.all().then((datas) => {
-    res.render("users/view", { datas, username: req.session.user.name });
-  });
+  res.render("users/view", { username: req.session.user.name });
+}
+
+async function getUserAPI(req, res) {
+  const { draw, length, start, search } = req.query;
+  const result = await User.all(
+    search.value,
+    search.value,
+    search.value,
+    search.value,
+    draw,
+    length,
+    start,
+    req.query.columns[req.query.order[0].column].data,
+    req.query.order[0].dir
+  );
+  res.json(result);
 }
 
 function getAddUser(req, res) {
@@ -84,4 +98,5 @@ module.exports = {
   getAddUser,
   editUser,
   deleteUser,
+  getUserAPI,
 };

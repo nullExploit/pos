@@ -4,16 +4,31 @@ const path = require("path");
 const { readdirSync, unlinkSync } = require("node:fs");
 
 function getGood(req, res) {
-  Good.all().then((datas) => {
-    res.render("goods/view", {
-      datas,
-      username: req.session.user.name,
-    });
+  res.render("goods/view", {
+    username: req.session.user.name,
   });
 }
 
+async function getGoodAPI(req, res) {
+  const { draw, length, start, search } = req.query;
+  const result = await Good.all(
+    search.value,
+    search.value,
+    search.value,
+    search.value,
+    search.value,
+    search.value,
+    draw,
+    length,
+    start,
+    req.query.columns[req.query.order[0].column].data,
+    req.query.order[0].dir
+  );
+  res.json(result);
+}
+
 function getAddGood(req, res) {
-  Unit.all().then((dataUnit) => {
+  Unit.getAll().then((dataUnit) => {
     res.render("goods/form", {
       data: {},
       username: req.session.user.name,
@@ -25,7 +40,7 @@ function getAddGood(req, res) {
 function getEditGood(req, res) {
   const id = req.params.id;
   Good.get(id).then((data) => {
-    Unit.all().then((dataUnit) => {
+    Unit.getAll().then((dataUnit) => {
       res.render("goods/form", {
         data,
         username: req.session.user.name,
@@ -125,4 +140,5 @@ module.exports = {
   addGood,
   editGood,
   deleteGood,
+  getGoodAPI
 };

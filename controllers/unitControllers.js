@@ -1,9 +1,22 @@
 const Unit = require("../models/Unit");
 
 function getUnit(req, res) {
-  Unit.all().then((datas) => {
-    res.render("units/view", { datas, username: req.session.user.name });
-  });
+  res.render("units/view", { username: req.session.user.name });
+}
+
+async function getUnitAPI(req, res) {
+  const { draw, length, start, search } = req.query;
+  const result = await Unit.all(
+    search.value,
+    search.value,
+    search.value,
+    draw,
+    length,
+    start,
+    req.query.columns[req.query.order[0].column].data,
+    req.query.order[0].dir
+  );
+  res.json(result);
 }
 
 function getAddUnit(req, res) {
@@ -46,4 +59,5 @@ module.exports = {
   addUnit,
   editUnit,
   deleteUnit,
+  getUnitAPI
 };

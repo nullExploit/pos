@@ -7,10 +7,58 @@ class Supplier {
     this.phone = phone;
   }
 
-  static async all() {
+  static async all(id, name, address, phone, page, limit, offset, sortBy, sortMode) {
     try {
-      const datas = await db.query("SELECT * FROM suppliers");
-      return datas.rows;
+      const queryParams = [];
+      const params = [];
+      let sql = "SELECT COUNT(*) AS total FROM suppliers";
+
+      const realTotal = await db.query(sql);
+
+      if (id) {
+        queryParams.push(`CAST(supplierid AS TEXT) LIKE '%' || $${queryParams.length + 1} || '%'`);
+        params.push(id);
+      }
+
+      if (name) {
+        queryParams.push(`name LIKE '%' || $${queryParams.length + 1} || '%'`);
+        params.push(name);
+      }
+
+      if (address) {
+        queryParams.push(`address LIKE '%' || $${queryParams.length + 1} || '%'`);
+        params.push(address);
+      }
+
+      if (phone) {
+        queryParams.push(`phone LIKE '%' || $${queryParams.length + 1} || '%'`);
+        params.push(phone);
+      }
+
+      if (queryParams.length) sql += ` WHERE ${queryParams.join(" OR ")}`;
+
+      const filteredTotal = await db.query(sql, params);
+
+      sql = "SELECT * FROM suppliers";
+
+      if (queryParams.length) sql += ` WHERE ${queryParams.join(" OR ")}`;
+
+      sql += ` ORDER BY ${sortBy} ${sortMode}`;
+
+      if (limit) {
+        sql += ` limit $${queryParams.length + 1} offset $${
+          queryParams.length + 2
+        }`;
+        params.push(limit, offset);
+      }
+
+      const datas = await db.query(sql, params);
+      return {
+        draw: Number(page),
+        recordsTotal: Number(realTotal.rows[0].total),
+        recordsFiltered: Number(filteredTotal.rows[0].total),
+        data: datas.rows,
+      };
     } catch (e) {
       console.log(e);
     }
