@@ -80,8 +80,8 @@ class User {
       const data = await db.query("SELECT * FROM users WHERE email = $1", [
         email,
       ]);
-      if (data.rows[0]) return data.rows[0];
-      return new Error("User Not Found");
+      
+      return data.rows[0];
     } catch (e) {
       console.log(e);
     }

@@ -1,23 +1,33 @@
 const db = require("./pg");
 
-class Unit {
-  constructor(unit, name, note) {
-    this.unit = unit;
+class Customer {
+  constructor(name, address, phone) {
     this.name = name;
-    this.note = note;
+    this.address = address;
+    this.phone = phone;
   }
 
-  static async all(unit, name, note, page, limit, offset, sortBy, sortMode) {
+  static async all(
+    id,
+    name,
+    address,
+    phone,
+    page,
+    limit,
+    offset,
+    sortBy,
+    sortMode
+  ) {
     try {
       const queryParams = [];
       const params = [];
-      let sql = "SELECT COUNT(*) AS total FROM units";
+      let sql = "SELECT COUNT(*) AS total FROM customers";
 
       const realTotal = await db.query(sql);
 
-      if (unit) {
-        queryParams.push(`unit LIKE '%' || $${queryParams.length + 1} || '%'`);
-        params.push(unit);
+      if (id) {
+        queryParams.push(`CAST(customerid AS TEXT) LIKE '%' || $${queryParams.length + 1} || '%'`);
+        params.push(id);
       }
 
       if (name) {
@@ -25,16 +35,21 @@ class Unit {
         params.push(name);
       }
 
-      if (note) {
-        queryParams.push(`note LIKE '%' || $${queryParams.length + 1} || '%'`);
-        params.push(note);
+      if (address) {
+        queryParams.push(`address LIKE '%' || $${queryParams.length + 1} || '%'`);
+        params.push(address);
+      }
+
+      if (phone) {
+        queryParams.push(`phone LIKE '%' || $${queryParams.length + 1} || '%'`);
+        params.push(phone);
       }
 
       if (queryParams.length) sql += ` WHERE ${queryParams.join(" OR ")}`;
 
       const filteredTotal = await db.query(sql, params);
 
-      sql = "SELECT * FROM units";
+      sql = "SELECT * FROM customers";
 
       if (queryParams.length) sql += ` WHERE ${queryParams.join(" OR ")}`;
 
@@ -59,55 +74,47 @@ class Unit {
     }
   }
 
-  static async getAll() {
+  static async get(customerid) {
     try {
-      const datas = await db.query("SELECT * FROM units")
-      return datas.rows
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
-  static async get(unit) {
-    try {
-      const data = await db.query("SELECT * FROM units WHERE unit = $1", [
-        unit,
-      ]);
+      const data = await db.query(
+        "SELECT * FROM customers WHERE customerid = $1",
+        [customerid]
+      );
       return data.rows[0];
     } catch (e) {
       console.log(e);
     }
   }
 
-  static async create(unit, name, note) {
+  static async create(name, address, phone) {
     try {
       await db.query(
-        "INSERT INTO units (unit, name, note) VALUES ($1, $2, $3)",
-        [unit, name, note]
+        "INSERT INTO customers (name, address, phone) VALUES ($1, $2, $3)",
+        [name, address, phone]
       );
     } catch (e) {
       console.log(e);
     }
   }
 
-  static async update(newUnit, oldUnit, name, note) {
+  static async update(name, address, phone, id) {
     try {
       await db.query(
-        "UPDATE units SET unit = $1, name = $2, note = $3 WHERE unit = $4",
-        [newUnit, name, note, oldUnit]
+        "UPDATE customers SET name = $1, address = $2, phone = $3 WHERE customerid = $4",
+        [name, address, phone, id]
       );
     } catch (e) {
       console.log(e);
     }
   }
 
-  static async del(unit) {
+  static async del(customerid) {
     try {
-      await db.query("DELETE FROM units WHERE unit = $1", [unit]);
+      await db.query("DELETE FROM customers WHERE customerid = $1", [customerid]);
     } catch (e) {
       console.log(e);
     }
   }
 }
 
-module.exports = Unit;
+module.exports = Customer;

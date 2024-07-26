@@ -114,8 +114,8 @@ class Good {
       const data = await db.query("SELECT * FROM goods WHERE barcode = $1", [
         barcode,
       ]);
-      if (data.rows[0]) return data.rows[0];
-      return new Error("Good Not Found");
+      
+      return data.rows[0];
     } catch (e) {
       console.log(e);
     }

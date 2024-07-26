@@ -62,8 +62,8 @@ class PurchaseItem {
         "SELECT * FROM purchaseitems WHERE purchaseitemid = $1",
         [purchaseitemid]
       );
-      if (data.rows[0]) return data.rows[0];
-      return new Error("Purchaseitem Not Found");
+    
+      return data.rows[0];
     } catch (e) {
       console.log(e);
     }

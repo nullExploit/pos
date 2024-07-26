@@ -79,8 +79,8 @@ class Supplier {
         "SELECT * FROM suppliers WHERE supplierid = $1",
         [supplierid]
       );
-      if (data.rows[0]) return data.rows[0];
-      return new Error("Supplier Not Found");
+      
+      return data.rows[0];
     } catch (e) {
       console.log(e);
     }

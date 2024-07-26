@@ -18,6 +18,9 @@ switch (path) {
   case "/purchases":
     $(document).ready(forPurchases);
     break;
+  case "/customers":
+    $(document).ready(forCustomers);
+    break;
 }
 
 function forUsers() {
@@ -179,6 +182,31 @@ function forPurchases() {
         <th>Total Summary</th>
         <th>Supplier</th>
         <th>Operator</th>
+        <th>Action</th>
+    </tr>
+    `);
+}
+
+function forCustomers() {
+  $("#dataTable").DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: "/customers/api",
+    columns: [
+      { data: "customerid" },
+      { data: "name" },
+      { data: "address" },
+      { data: "phone" },
+      { data: "customerid", render: actions },
+    ],
+  });
+
+  $("#foot").html(`
+     <tr>
+        <th>Customer ID</th>
+        <th>Name</th>
+        <th>Address</th>
+        <th>Phone</th>
         <th>Action</th>
     </tr>
     `);
