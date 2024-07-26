@@ -64,6 +64,15 @@ class Supplier {
     }
   }
 
+  static async getAll() {
+    try {
+      const datas = await db.query("SELECT * FROM suppliers")
+      return datas.rows
+    } catch (e) {
+      console.log(e) 
+    }
+  }
+
   static async get(supplierid) {
     try {
       const data = await db.query(

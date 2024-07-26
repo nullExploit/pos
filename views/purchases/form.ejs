@@ -1,0 +1,174 @@
+<%- include('../partials/header') %>
+
+    <title>POS - Purchases</title>
+
+    </head>
+
+    <body id="page-top">
+
+        <!-- Page Wrapper -->
+        <div id="wrapper">
+
+            <%- include('../partials/sidebar') %>
+
+                <!-- Content Wrapper -->
+                <div id="content-wrapper" class="d-flex flex-column">
+
+                    <!-- Main Content -->
+                    <div id="content">
+
+                        <!-- Topbar -->
+                        <%- include('../partials/topbar') %>
+                            <!-- End of Topbar -->
+
+                            <!-- Begin Page Content -->
+                            <div class="container-fluid">
+
+                                <!-- Page Heading -->
+                                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                                    <h1 class="h3 mb-0 text-gray-800">Purchases</h1>
+                                </div>
+
+                                <div class="card shadow mb-4">
+
+                                    <div class="card-header py-3">
+                                        <h1 class="m-0 text-gray-600">
+                                            Transaction
+                                        </h1>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3 row">
+                                            <div class="col-sm-4">
+                                                <label for="inputInvoice" class="col-form-label">Invoice</label>
+                                                <input type="text" class="form-control" id="inputInvoice"
+                                                    value="<%= dataInv.invoice %>" disabled>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label for="inputTime" class="col-form-label">Time</label>
+                                                <input type="text" class="form-control" id="inputTime" name="time"
+                                                    value="<%= dataInv.time %>" disabled>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label for="inputOperator" class="col-form-label">Operator</label>
+                                                <input type="text" class="form-control" id="inputOperator"
+                                                    value="<%= username %>" title="<%= userid %>" name="operator"
+                                                    disabled>
+                                            </div>
+                                        </div>
+                                        <hr class="mt-5">
+                                        <div class="mb-3 row">
+                                            <div class="col-sm-4">
+                                                <label for="inputBarcode" class="col-form-label">Barcode</label>
+                                                <select name="barcode" class="form-control" id="inputBarcode"></select>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label for="inputGood" class="col-form-label">Goods Name</label>
+                                                <input type="text" class="form-control" id="inputGood" name="goods"
+                                                    disabled>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label for="inputStock" class="col-form-label">Stock</label>
+                                                <input type="text" class="form-control" id="inputStock" name="stock"
+                                                    disabled>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <div class="col-sm-4">
+                                                <label for="inputPurchaseprice" class="col-form-label">Purchase
+                                                    Price</label>
+                                                <input type="text" class="form-control" id="inputPurchaseprice"
+                                                    name="purchaseprice" style="background-color: #fff;" readonly>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label for="inputQuantity" class="col-form-label">Qty</label>
+                                                <input type="number" class="form-control" id="inputQuantity"
+                                                    name="quantity" min="1" onkeydown="return false"
+                                                    style="background-color: #fff;" readonly>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label for="inputTotalprice" class="col-form-label">Total Price</label>
+                                                <input type="text" class="form-control" id="inputTotalprice"
+                                                    name="totalprice" style="background-color: #fff;" readonly>
+                                            </div>
+                                        </div>
+                                        <button id="submitItem" class="btn btn-primary btn-icon-split">
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-fw fa-plus"></i>
+                                            </span>
+                                            <span class="text">Add</span>
+                                        </button>
+                                    </div>
+                                    <hr>
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>Barcode</th>
+                                                <th>Name</th>
+                                                <th>Qty</th>
+                                                <th>Price</th>
+                                                <th>Total Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tableItem"></tbody>
+                                    </table>
+                                    <div class="card-footer">
+                                        <div class="mb-3 row align-items-center">
+                                            <div class="col-sm-2">
+                                                <label for="inputTotalsummary" class="col-form-label">Total
+                                                    Summary</label>
+                                            </div>
+                                            <div class="col-sm-10">
+                                                <input type="text" id="inputTotalsummary" class="form-control" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row align-items-center">
+                                            <div class="col-sm-2">
+                                                <label for="inputSupplier" class="col-form-label">Supplier</label>
+                                            </div>
+                                            <div class="col-sm-10">
+                                                <select id="inputSupplier" class="form-control">
+                                                    <% dataSup.forEach(data=> { %>
+                                                        <option value="<%= data.supplierid %>" <%= data.supplierid == dataInv.supplierid ? "selected" : "" %>>
+                                                            <%= data.name %>
+                                                        </option>
+                                                        <% }) %>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <button id="submitPurchase" class="btn btn-success btn-icon-split">
+                                                <span class="icon text-white-50">
+                                                    <i class="fas fa-fw fa-plus"></i>
+                                                </span>
+                                                <span class="text">Finish</span>
+                                            </button>
+                                            <button
+                                                onclick="window.location.pathname = '/purchases/deleteitems/<%= dataInv.invoice %>'"
+                                                id="backLink" class="btn btn-warning btn-icon-split">
+                                                <span class="icon text-white-50">
+                                                    <i class="fas fa-fw fa-arrow-left"></i>
+                                                </span>
+                                                <span class="text">Back</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- End of Content Wrapper -->
+
+                    </div>
+                    <!-- End of Page Wrapper -->
+
+                    <%- include('../partials/copyright') %>
+
+                        <!-- Scroll to Top Button-->
+                        <a class="scroll-to-top rounded" href="#page-top">
+                            <i class="fas fa-angle-up"></i>
+                        </a>
+
+                        <!-- Logout Modal-->
+                        <%- include('../partials/logout') %>
+
+                            <%- include('../partials/footer') %>

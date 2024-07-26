@@ -27,6 +27,12 @@ async function getGoodAPI(req, res) {
   res.json(result);
 }
 
+function getGoodPurchaseAPI(req, res) {
+  Good.getAll().then(data => {
+    res.json(data)
+  })
+}
+
 function getAddGood(req, res) {
   Unit.getAll().then((dataUnit) => {
     res.render("goods/form", {
@@ -140,5 +146,6 @@ module.exports = {
   addGood,
   editGood,
   deleteGood,
-  getGoodAPI
+  getGoodAPI,
+  getGoodPurchaseAPI
 };

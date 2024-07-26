@@ -15,6 +15,9 @@ switch (path) {
   case "/suppliers":
     $(document).ready(forSuppliers);
     break;
+  case "/purchases":
+    $(document).ready(forPurchases);
+    break;
 }
 
 function forUsers() {
@@ -69,6 +72,7 @@ function forGoods() {
   $("#dataTable").DataTable({
     processing: true,
     serverSide: true,
+    aoColumnDefs: [{ bSortable: false, aTargets: [-1, -2] }],
     ajax: "/goods/api",
     columns: [
       { data: "barcode" },
@@ -139,6 +143,42 @@ function forSuppliers() {
         <th>Name</th>
         <th>Address</th>
         <th>Phone</th>
+        <th>Action</th>
+    </tr>
+    `);
+}
+
+function forPurchases() {
+  $("#dataTable").DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: "/purchases/api",
+    columns: [
+      { data: "invoice" },
+      { data: "timeformatted" },
+      {
+        data: "totalsum",
+        render: (data) => {
+          return `Rp ${
+            Number(data).toLocaleString("in").includes(",")
+              ? Number(data).toLocaleString("in")
+              : Number(data).toLocaleString("in") + ",00"
+          }`;
+        },
+      },
+      { data: "suppliername" },
+      { data: "username" },
+      { data: "invoice", render: actions },
+    ],
+  });
+
+  $("#foot").html(`
+     <tr>
+        <th>Invoice</th>
+        <th>Time</th>
+        <th>Total Summary</th>
+        <th>Supplier</th>
+        <th>Operator</th>
         <th>Action</th>
     </tr>
     `);

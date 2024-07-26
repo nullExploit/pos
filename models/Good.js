@@ -100,6 +100,15 @@ class Good {
     }
   }
 
+  static async getAll() {
+    try {
+      const datas = await db.query("SELECT * FROM goods")
+      return datas.rows  
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   static async get(barcode) {
     try {
       const data = await db.query("SELECT * FROM goods WHERE barcode = $1", [
