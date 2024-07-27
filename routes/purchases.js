@@ -1,7 +1,6 @@
 var express = require("express");
 const {
   getPurchase,
-  getAddPurchase,
   getEditPurchase,
   deletePurchase,
   addPurchase,
@@ -17,7 +16,6 @@ var router = express.Router();
 const hasSession = require("../helper/util");
 
 router.get("/", hasSession, getPurchase);
-router.get("/add", hasSession, getAddPurchase);
 router.get("/edit/:id", hasSession, getEditPurchase);
 router.get("/delete/:id", hasSession, deletePurchase);
 router.get("/api", hasSession, getPurchaseAPI);

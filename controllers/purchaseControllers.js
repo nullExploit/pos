@@ -4,7 +4,7 @@ const Good = require("../models/Good");
 const Supplier = require("../models/Supplier");
 
 function getPurchase(req, res) {
-  res.render("purchases/view", { username: req.session.user.name });
+  res.render("purchases/view", { username: req.session.user.name, userid: req.session.user.id });
 }
 
 async function getPurchaseAPI(req, res) {
@@ -22,22 +22,6 @@ async function getPurchaseAPI(req, res) {
     req.query.order[0].dir
   );
   res.json(result);
-}
-
-function getAddPurchase(req, res) {
-  Good.getAll().then((dataGood) => {
-    PurchaseItem.inv().then((dataInv) => {
-      Supplier.getAll().then((dataSup) => {
-        res.render("purchases/form", {
-          dataGood,
-          dataInv,
-          dataSup,
-          username: req.session.user.name,
-          userid: req.session.user.id,
-        });
-      });
-    });
-  });
 }
 
 function getEditPurchase(req, res) {
@@ -68,7 +52,7 @@ function getPurchaseItemAPI(req, res) {
 async function addPurchaseItem(req, res) {
   const { invoice, itemcode, quantity, purchaseprice, totalprice } = req.body;
 
-  const result = await PurchaseItem.create(
+  await PurchaseItem.create(
     invoice,
     itemcode,
     quantity,
@@ -76,14 +60,16 @@ async function addPurchaseItem(req, res) {
     totalprice
   );
 
-  res.status(201).json(result);
+  res.status(201).json();
 }
 
 function addPurchase(req, res) {
-  const { invoice, time, totalsum, supplier, operator } = req.body;
+  const { supplier, operator } = req.body;
 
-  Purchase.create(invoice, time, totalsum, supplier, operator).then(() => {
-    res.redirect("/purchases");
+  Purchase.create(supplier, operator).then(() => {
+    Purchase.getLast().then(invoice => {
+      res.status(201).json({invoice})
+    })
   });
 }
 
@@ -114,7 +100,6 @@ function deletePurchaseItemAll(req, res) {
 
 module.exports = {
   getPurchase,
-  getAddPurchase,
   getEditPurchase,
   addPurchase,
   editPurchase,

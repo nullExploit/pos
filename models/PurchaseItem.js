@@ -16,54 +16,10 @@ class PurchaseItem {
         [invoice]
       );
       const total = await db.query(
-        "SELECT SUM(totalprice) AS total FROM purchaseitems WHERE invoice = $1",
+        "SELECT totalsum AS total FROM purchases WHERE invoice = $1",
         [invoice]
       );
       return { total: total.rows[0], datas: datas.rows };
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  static async inv() {
-    try {
-      const date = await db.query("SELECT * FROM datebefore");
-      const time = await db.query(
-        "SELECT TO_CHAR(now(), 'DD Mon YYYY HH24:MI:SS') AS time, TO_CHAR(CURRENT_DATE, 'DD') AS date"
-      );
-      let invoice = {};
-
-      if (date.rows[0].date == time.rows[0].date) {
-        invoice = await db.query(
-          "SELECT 'INV-' || TO_CHAR(CURRENT_DATE, 'YYYYMMDD-') || nextval('no_urut') AS invoice"
-        );
-      } else {
-        await db.query("ALTER SEQUENCE no_urut RESTART WITH 1");
-        await db.query(
-          "UPDATE datebefore SET date = TO_CHAR(CURRENT_DATE, 'DD')"
-        );
-        invoice = await db.query(
-          "SELECT 'INV-' || TO_CHAR(CURRENT_DATE, 'YYYYMMDD-') || nextval('no_urut') AS invoice"
-        );
-      }
-
-      return {
-        invoice: invoice.rows[0].invoice,
-        time: time.rows[0].time,
-      };
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  static async get(purchaseitemid) {
-    try {
-      const data = await db.query(
-        "SELECT * FROM purchaseitems WHERE purchaseitemid = $1",
-        [purchaseitemid]
-      );
-    
-      return data.rows[0];
     } catch (e) {
       console.log(e);
     }

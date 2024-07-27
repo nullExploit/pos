@@ -1,4 +1,4 @@
-if (path == "/purchases/add" || path.includes("/purchases/edit")) {
+if (path.includes("/purchases/edit")) {
   const table = document.getElementById("tableItem");
   const inputBarcode = document.getElementById("inputBarcode");
   const inputGood = document.getElementById("inputGood");
@@ -11,17 +11,13 @@ if (path == "/purchases/add" || path.includes("/purchases/edit")) {
   const submitItem = document.getElementById("submitItem");
   let html = "";
 
-  submitPurchaseButton.onclick = submitPurchase;
+  const back = document.getElementById("backLink");
+
+  back.onclick = updatePurchase;
+  submitPurchaseButton.onclick = updatePurchase;
   submitItem.onclick = additems;
   inputQuantity.onchange = changeQuantity;
   inputBarcode.onchange = changeBarcode;
-
-  if (path.includes("/purchases/edit")) {
-    const back = document.getElementById("backLink")
-
-    back.onclick = updateItems
-    submitPurchaseButton.onclick = updateItems
-  }
 
   drawTable();
 
@@ -66,33 +62,6 @@ if (path == "/purchases/add" || path.includes("/purchases/edit")) {
     }
   }
 
-  async function submitPurchase() {
-    const dataTable = await fetch(
-      `/purchases/itemsapi?invoice=${
-        document.getElementById("inputInvoice").value
-      }`
-    ).then((data) => data.json());
-
-    if (dataTable.total.total) {
-      await fetch("/purchases/add", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          invoice: document.getElementById("inputInvoice").value,
-          time: document.getElementById("inputTime").value,
-          totalsum: Number(dataTable.total.total),
-          supplier: Number(document.getElementById("inputSupplier").value),
-          operator: Number(document.getElementById("inputOperator").title),
-        }),
-      });
-
-      window.location.pathname = "/purchases";
-    }
-  }
-
   async function changeQuantity() {
     const total =
       Number(inputPurchasePrice.value) * Number(inputQuantity.value);
@@ -127,32 +96,30 @@ if (path == "/purchases/add" || path.includes("/purchases/edit")) {
     }
   }
 
-  async function updateItems() {
+  async function updatePurchase() {
     try {
-        console.log("test")
       const dataTable = await fetch(
         `/purchases/itemsapi?invoice=${
           document.getElementById("inputInvoice").value
         }`
       ).then((data) => data.json());
 
-      await fetch(
-        `/purchases/edit/${document.getElementById("inputInvoice").value}`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            totalsum: Number(dataTable.total.total),
-            supplier: Number(document.getElementById("inputSupplier").value),
-          }),
-        }
-      );
+        await fetch(
+          `/purchases/edit/${document.getElementById("inputInvoice").value}`,
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              totalsum: Number(dataTable.total.total),
+              supplier: Number(document.getElementById("inputSupplier").value),
+            }),
+          }
+        );
 
       window.location.pathname = "/purchases";
-
     } catch (e) {
       console.log(e);
     }
@@ -220,5 +187,24 @@ if (path == "/purchases/add" || path.includes("/purchases/edit")) {
     }
 
     table.innerHTML = html;
+  }
+} else if (path == "/purchases") {
+  const addPurchase = document.getElementById("addPurchases");
+  addPurchase.onclick = generateInv;
+
+  async function generateInv() {
+    const data = await fetch("/purchases/add", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        supplier: null,
+        operator: Number(document.getElementById("purchasePara").ariaLabel),
+      }),
+    }).then((data) => data.json());
+
+    window.location.pathname = `/purchases/edit/${data.invoice}`;
   }
 }

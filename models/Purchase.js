@@ -105,12 +105,18 @@ class Purchase {
     }
   }
 
-  static async create(invoice, time, totalsum, supplier, operator) {
+  static async getLast() {
     try {
-      await db.query("INSERT INTO purchases VALUES ($1, $2, $3, $4, $5)", [
-        invoice,
-        time,
-        totalsum,
+      const data = await db.query("SELECT * FROM purchases ORDER BY invoice DESC LIMIT 1") 
+      return data.rows[0].invoice
+    } catch (e) {
+      console.log(e) 
+    }
+  }
+
+  static async create(supplier, operator) {
+    try {
+      await db.query("INSERT INTO purchases (supplier, operator) VALUES ($1, $2)", [
         supplier,
         operator,
       ]);
