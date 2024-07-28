@@ -38,17 +38,7 @@ class PurchaseItem {
 
   static async del(id) {
     try {
-      await db.query("DELETE FROM purchaseitems WHERE id = $1", [
-        id,
-      ]);
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  static async delAll(invoice) {
-    try {
-      await db.query("DELETE FROM purchaseitems WHERE invoice = $1", [invoice]);
+      await db.query("DELETE FROM purchaseitems WHERE id = $1", [id]);
     } catch (e) {
       console.log(e);
     }

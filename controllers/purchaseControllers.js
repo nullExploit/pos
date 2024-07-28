@@ -4,7 +4,10 @@ const Good = require("../models/Good");
 const Supplier = require("../models/Supplier");
 
 function getPurchase(req, res) {
-  res.render("purchases/view", { username: req.session.user.name, userid: req.session.user.id });
+  res.render("purchases/view", {
+    username: req.session.user.name,
+    userid: req.session.user.id,
+  });
 }
 
 async function getPurchaseAPI(req, res) {
@@ -33,8 +36,8 @@ function getEditPurchase(req, res) {
           dataGood,
           dataInv,
           dataSup,
-          username: dataInv.username,
-          userid: dataInv.userid,
+          username: dataInv?.username,
+          userid: dataInv?.userid,
         });
       });
     });
@@ -67,9 +70,9 @@ function addPurchase(req, res) {
   const { supplier, operator } = req.body;
 
   Purchase.create(supplier, operator).then(() => {
-    Purchase.getLast().then(invoice => {
-      res.status(201).json({invoice})
-    })
+    Purchase.getLast().then((invoice) => {
+      res.status(201).json({ invoice });
+    });
   });
 }
 
@@ -84,18 +87,13 @@ function editPurchase(req, res) {
 
 function deletePurchase(req, res) {
   const id = req.params.id;
-  Purchase.del(id).then(res.redirect(`/purchases/deleteitems/${id}`));
+  Purchase.del(id).then(res.redirect("/purchases"));
 }
 
 function deletePurchaseItem(req, res) {
   const id = req.params.id;
   const iditems = req.params.iditems;
   PurchaseItem.del(Number(iditems)).then(res.redirect(`/purchases/edit/${id}`));
-}
-
-function deletePurchaseItemAll(req, res) {
-  const id = req.params.id;
-  PurchaseItem.delAll(id).then(res.redirect("/purchases"));
 }
 
 module.exports = {
@@ -108,5 +106,4 @@ module.exports = {
   addPurchaseItem,
   getPurchaseItemAPI,
   deletePurchaseItem,
-  deletePurchaseItemAll,
 };

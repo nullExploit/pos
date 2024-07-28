@@ -26,7 +26,11 @@ class Customer {
       const realTotal = await db.query(sql);
 
       if (id) {
-        queryParams.push(`CAST(customerid AS TEXT) LIKE '%' || $${queryParams.length + 1} || '%'`);
+        queryParams.push(
+          `CAST(customerid AS TEXT) LIKE '%' || $${
+            queryParams.length + 1
+          } || '%'`
+        );
         params.push(id);
       }
 
@@ -36,7 +40,9 @@ class Customer {
       }
 
       if (address) {
-        queryParams.push(`address LIKE '%' || $${queryParams.length + 1} || '%'`);
+        queryParams.push(
+          `address LIKE '%' || $${queryParams.length + 1} || '%'`
+        );
         params.push(address);
       }
 
@@ -69,6 +75,15 @@ class Customer {
         recordsFiltered: Number(filteredTotal.rows[0].total),
         data: datas.rows,
       };
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  static async getAll() {
+    try {
+      const datas = await db.query("SELECT * FROM customers");
+      return datas.rows;
     } catch (e) {
       console.log(e);
     }
@@ -110,7 +125,9 @@ class Customer {
 
   static async del(customerid) {
     try {
-      await db.query("DELETE FROM customers WHERE customerid = $1", [customerid]);
+      await db.query("DELETE FROM customers WHERE customerid = $1", [
+        customerid,
+      ]);
     } catch (e) {
       console.log(e);
     }

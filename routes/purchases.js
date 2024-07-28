@@ -9,7 +9,6 @@ const {
   addPurchaseItem,
   getPurchaseItemAPI,
   deletePurchaseItem,
-  deletePurchaseItemAll,
 } = require("../controllers/purchaseControllers");
 var router = express.Router();
 
@@ -20,7 +19,6 @@ router.get("/edit/:id", hasSession, getEditPurchase);
 router.get("/delete/:id", hasSession, deletePurchase);
 router.get("/api", hasSession, getPurchaseAPI);
 router.get("/itemsapi", hasSession, getPurchaseItemAPI)
-router.get("/deleteitems/:id", hasSession, deletePurchaseItemAll)
 router.get("/deleteitems/:id/:iditems", hasSession, deletePurchaseItem)
 
 router.post("/add", hasSession, addPurchase);

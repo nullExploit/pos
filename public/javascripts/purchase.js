@@ -9,9 +9,8 @@ if (path.includes("/purchases/edit")) {
   const inputTotalSummary = document.getElementById("inputTotalsummary");
   const submitPurchaseButton = document.getElementById("submitPurchase");
   const submitItem = document.getElementById("submitItem");
-  let html = "";
-
   const back = document.getElementById("backLink");
+  let html = "";
 
   back.onclick = updatePurchase;
   submitPurchaseButton.onclick = updatePurchase;
@@ -104,20 +103,20 @@ if (path.includes("/purchases/edit")) {
         }`
       ).then((data) => data.json());
 
-        await fetch(
-          `/purchases/edit/${document.getElementById("inputInvoice").value}`,
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              totalsum: Number(dataTable.total.total),
-              supplier: Number(document.getElementById("inputSupplier").value),
-            }),
-          }
-        );
+      await fetch(
+        `/purchases/edit/${document.getElementById("inputInvoice").value}`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            totalsum: Number(dataTable.total.total),
+            supplier: Number(document.getElementById("inputSupplier").value),
+          }),
+        }
+      );
 
       window.location.pathname = "/purchases";
     } catch (e) {
@@ -157,7 +156,7 @@ if (path.includes("/purchases/edit")) {
                 : Number(data.totalprice).toLocaleString("in") + ",00"
             }`}</td>
             ${
-              path.includes("/purchases/edit")
+              path.split("")[path.length - 1] != "/"
                 ? `
                 <td>
                     <a href="/purchases/deleteitems/${
@@ -205,6 +204,6 @@ if (path.includes("/purchases/edit")) {
       }),
     }).then((data) => data.json());
 
-    window.location.pathname = `/purchases/edit/${data.invoice}`;
+    window.location.pathname = `/purchases/edit/${data.invoice}/`;
   }
 }

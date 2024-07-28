@@ -21,6 +21,9 @@ switch (path) {
   case "/customers":
     $(document).ready(forCustomers);
     break;
+  case "/sales":
+    $(document).ready(forSales);
+    break;
 }
 
 function forUsers() {
@@ -207,6 +210,62 @@ function forCustomers() {
         <th>Name</th>
         <th>Address</th>
         <th>Phone</th>
+        <th>Action</th>
+    </tr>
+    `);
+}
+
+function forSales() {
+  $("#dataTable").DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: "/sales/api",
+    columns: [
+      { data: "invoice" },
+      { data: "timeformatted" },
+      {
+        data: "totalsum",
+        render: (data) => {
+          return `Rp ${
+            Number(data).toLocaleString("in").includes(",")
+              ? Number(data).toLocaleString("in")
+              : Number(data).toLocaleString("in") + ",00"
+          }`;
+        },
+      },
+      {
+        data: "pay",
+        render: (data) => {
+          return `Rp ${
+            Number(data).toLocaleString("in").includes(",")
+              ? Number(data).toLocaleString("in")
+              : Number(data).toLocaleString("in") + ",00"
+          }`;
+        },
+      },
+      {
+        data: "change",
+        render: (data) => {
+          return `Rp ${
+            Number(data).toLocaleString("in").includes(",")
+              ? Number(data).toLocaleString("in")
+              : Number(data).toLocaleString("in") + ",00"
+          }`;
+        },
+      },
+      { data: "customername" },
+      { data: "invoice", render: actions },
+    ],
+  });
+
+  $("#foot").html(`
+     <tr>
+        <th>Invoice</th>
+        <th>Time</th>
+        <th>Total Summary</th>
+        <th>Pay</th>
+        <th>Change</th>
+        <th>Customer</th>
         <th>Action</th>
     </tr>
     `);
