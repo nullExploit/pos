@@ -51,6 +51,14 @@ if (path.includes("/sales/edit")) {
         }`;
         inputQuantity.removeAttribute("readonly");
         inputQuantity.setAttribute("max", data.stock);
+        if (inputStock.value == 0) {
+          inputQuantity.value = 0;
+          inputTotalPrice.value = `Rp ${
+            Number(0).toLocaleString("in").includes(",")
+              ? Number(0).toLocaleString("in")
+              : Number(0).toLocaleString("in") + ",00"
+          }`;
+        }
       }
     });
 
@@ -75,7 +83,7 @@ if (path.includes("/sales/edit")) {
 
   async function additems() {
     try {
-      if (inputBarcode.value) {
+      if (inputBarcode.value && inputQuantity.value != 0) {
         await fetch("/sales/additems", {
           method: "POST",
           headers: {
@@ -168,6 +176,16 @@ if (path.includes("/sales/edit")) {
         }`
       ).then((data) => data.json());
       html = "";
+
+      if (inputBarcode.value) {
+        inputQuantity.value = 0;
+        inputQuantity.setAttribute("max", Number(inputStock.value));
+        inputTotalPrice.value = `Rp ${
+          Number(0).toLocaleString("in").includes(",")
+            ? Number(0).toLocaleString("in")
+            : Number(0).toLocaleString("in") + ",00"
+        }`;
+      }
 
       inputTotalSummary.value = `Rp ${
         Number(dataTable.total.total).toLocaleString("in").includes(",")

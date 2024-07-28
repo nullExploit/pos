@@ -172,7 +172,12 @@ function forPurchases() {
           }`;
         },
       },
-      { data: "suppliername" },
+      {
+        data: "suppliername",
+        render: (data) => {
+          return data ? data : "Not Selected";
+        },
+      },
       { data: "username" },
       { data: "invoice", render: actions },
     ],
@@ -253,7 +258,12 @@ function forSales() {
           }`;
         },
       },
-      { data: "customername" },
+      {
+        data: "customername",
+        render: (data) => {
+          return data ? data : "Not Selected";
+        },
+      },
       { data: "invoice", render: actions },
     ],
   });
