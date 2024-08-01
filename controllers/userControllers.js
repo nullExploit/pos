@@ -11,29 +11,28 @@ function postIndex(req, res) {
   const { email, password } = req.body;
   if (!email || !password) {
     req.flash("failedMessage", "Please input your credentials!");
-    res.redirect("/");
-  } else {
-    User.get(email).then((data) => {
-      if (!data.email) {
-        req.flash("failedMessage", "User not found!");
-        res.redirect("/");
-      } else {
-        User.login(email, password).then((match) => {
-          if (!match) {
-            req.flash("failedMessage", "Your password is incorrect!");
-            res.redirect("/");
-          } else {
-            req.session.user = {
-              id: data.userid,
-              email: data.email,
-              name: data.name,
-            };
-            res.redirect("/dashboard");
-          }
-        });
-      }
-    });
+    return res.redirect("/");
   }
+
+  User.get(email).then((data) => {
+    if (!data.email) {
+      req.flash("failedMessage", "User not found!");
+      return res.redirect("/");
+    }
+
+    User.login(email, password).then((match) => {
+      if (!match) {
+        req.flash("failedMessage", "Your password is incorrect!");
+        return res.redirect("/");
+      }
+      req.session.user = {
+        id: data.userid,
+        email: data.email,
+        name: data.name,
+      };
+      return res.redirect("/dashboard");
+    });
+  });
 }
 
 function getUser(req, res) {
@@ -90,6 +89,62 @@ function deleteUser(req, res) {
   User.del(id).then(res.redirect("/users"));
 }
 
+function getProfile(req, res) {
+  User.getId(req.session.user.id).then((data) => {
+    data.operation = "Profile";
+    res.render("users/form", {
+      data,
+      username: req.session.user.name,
+      failedMessage: req.flash("failedMessage"),
+      successMessage: req.flash("successMessage"),
+    });
+  });
+}
+
+function getPassword(req, res) {
+  res.render("users/form", {
+    data: { operation: "Change Password" },
+    username: req.session.user.name,
+    failedMessage: req.flash("failedMessage"),
+    successMessage: req.flash("successMessage"),
+  });
+}
+
+function changeProfile(req, res) {
+  const id = req.session.user.id;
+  const { email, name } = req.body;
+
+  req.session.user.name = name;
+  req.session.user.email = email;
+
+  User.update(id, email, name).then(() => {
+    req.flash("successMessage", "Your profile has been updated");
+    res.redirect("/users/profile");
+  });
+}
+
+function changePassword(req, res) {
+  const { oldpass, newpass, retypepass } = req.body;
+  const { id, email } = req.session.user;
+
+  User.login(email, oldpass).then((data) => {
+    if (!data) {
+      req.flash("failedMessage", "Your password is incorrect!");
+      return res.redirect("/users/changepassword");
+    }
+
+    if (newpass != retypepass) {
+      req.flash("failedMessage", "Password does'nt match!");
+      return res.redirect("/users/changepassword");
+    }
+
+    User.changepass(id, oldpass, newpass).then(
+      req.flash("successMessage", "Your password has been updated"),
+      res.redirect("/users/changepassword")
+    );
+  });
+}
+
 module.exports = {
   getIndex,
   postIndex,
@@ -100,4 +155,8 @@ module.exports = {
   editUser,
   deleteUser,
   getUserAPI,
+  getProfile,
+  getPassword,
+  changeProfile,
+  changePassword,
 };

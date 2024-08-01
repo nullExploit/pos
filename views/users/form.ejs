@@ -24,76 +24,158 @@
                             <!-- Begin Page Content -->
                             <div class="container-fluid">
 
-                                <!-- Page Heading -->
-                                <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                                    <h1 class="h3 mb-0 text-gray-800">Users</h1>
-                                </div>
+                                <% if (data.operation) {%>
+                                    <%- include('../partials/alert') %>
+                                        <%}%>
 
-                                <div class="card shadow mb-4">
-                                    <form method="post" autocomplete="off">
-                                        <div class="card-header py-3">
-                                            <h6 class="m-0 font-weight-bold text-primary"><%= data.userid ? "Form Edit" : "Form Add" %></h6>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="mb-3 row">
-                                                <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
-                                                <div class="col-sm-10">
-                                                    <input type="email" class="form-control" id="inputEmail"
-                                                        placeholder="Enter email address..." name="email" value="<%= data.email %>" required>
-                                                </div>
+                                            <!-- Page Heading -->
+                                            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                                                <h1 class="h3 mb-0 text-gray-800">
+                                                    <%= data.operation ? data.operation=="Profile" ? "Profile"
+                                                        : "Change Password" : "Users" %>
+                                                </h1>
                                             </div>
-                                            <div class="mb-3 row">
-                                                <label for="inputName" class="col-sm-2 col-form-label">Name</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" class="form-control" id="inputName"
-                                                        placeholder="Enter your name..." name="name" value="<%= data.name %>" required>
+
+                                        <div class="card shadow mb-4">
+                                            <form method="post" autocomplete="off">
+                                                <div class="card-header py-3">
+                                                    <h6 class="m-0 font-weight-bold text-primary">
+                                                        <%= data.operation ? data.operation=="Profile"
+                                                            ? "Your Profile" : "Change Your Password" : data.userid
+                                                            ? "Form Edit" : "Form Add" %>
+                                                    </h6>
                                                 </div>
-                                            </div>
-                                            <% if (!data.userid) { %>
-                                            <div class="mb-3 row">
-                                                <label for="inputPassword"
-                                                    class="col-sm-2 col-form-label">Password</label>
-                                                <div class="col-sm-10">
-                                                    <input type="password" class="form-control" id="inputPassword"
-                                                        placeholder="Password" name="password" required>
-                                                </div>
-                                            </div>
-                                            <% }%>
-                                            <div class="mb-3 row">
-                                                <label class="col-sm-2 col-form-label">Role</label>
-                                                <div class="col-sm-1">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="role"
-                                                            id="roleOperator" value="operator" <%= data.role != "admin" ? "checked" : "" %>>
-                                                        <label class="form-check-label"
-                                                            for="roleOperator">Operator</label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="role"
-                                                            id="roleAdmin" value="admin" <%= data.role == "admin" ? "checked" : "" %>>
-                                                        <label class="form-check-label" for="roleAdmin">Admin</label>
+                                                    <div class="card-body">
+                                            <% if (data.operation !="Change Password" ) {%>
+                                                <div class="mb-3 row">
+                                                    <label for="inputEmail"
+                                                        class="col-sm-2 col-form-label">Email</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="email" class="form-control"
+                                                            id="inputEmail"
+                                                            placeholder="Enter email address..."
+                                                            name="email" value="<%= data.email %>" required>
                                                     </div>
                                                 </div>
+                                                <div class="mb-3 row">
+                                                    <label for="inputName"
+                                                        class="col-sm-2 col-form-label">Name</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control"
+                                                            id="inputName" placeholder="Enter your name..."
+                                                            name="name" value="<%= data.name %>" required>
+                                                    </div>
+                                                </div>
+                                                <% }%>
+
+                                                <% if (data.operation=="Change Password" ) {%>
+                                                    <div class="mb-3 row">
+                                                        <label for="inputOldPass"
+                                                            class="col-sm-2 col-form-label">Old
+                                                            Password</label>
+                                                        <div class="col-sm-10">
+                                                            <input type="password" class="form-control"
+                                                                id="inputOldPass"
+                                                                placeholder="Enter Old Password..."
+                                                                name="oldpass" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3 row">
+                                                        <label for="inputNewPass"
+                                                            class="col-sm-2 col-form-label">New
+                                                            Password</label>
+                                                        <div class="col-sm-10">
+                                                            <input type="password" class="form-control"
+                                                                id="inputNewPass"
+                                                                placeholder="Enter New Password..."
+                                                                name="newpass" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3 row">
+                                                        <label for="inputRetypePass"
+                                                            class="col-sm-2 col-form-label">Retype
+                                                            Password</label>
+                                                        <div class="col-sm-10">
+                                                            <input type="password" class="form-control"
+                                                                id="inputRetypePass"
+                                                                placeholder="Retype New Password..."
+                                                                name="retypepass" required>
+                                                        </div>
+                                                    </div>
+                                                    <%}%>
+
+                                                <% if (!data.userid && !data.operation) { %>
+                                                    <div class="mb-3 row">
+                                                        <label for="inputPassword"
+                                                            class="col-sm-2 col-form-label">Password</label>
+                                                        <div class="col-sm-10">
+                                                            <input type="password"
+                                                                class="form-control"
+                                                                id="inputPassword"
+                                                                placeholder="Password"
+                                                                name="password" required>
+                                                        </div>
+                                                    </div>
+                                                    <% }%>
+                                                        <% if (!data.operation) {%>
+                                                            <div class="mb-3 row">
+                                                                <label
+                                                                    class="col-sm-2 col-form-label">Role</label>
+                                                                <div class="col-sm-1">
+                                                                    <div class="form-check">
+                                                                        <input
+                                                                            class="form-check-input"
+                                                                            type="radio"
+                                                                            name="role"
+                                                                            id="roleOperator"
+                                                                            value="operator"
+                                                                            <%=data.role
+                                                                            !="admin"
+                                                                            ? "checked" : "" %>>
+                                                                        <label
+                                                                            class="form-check-label"
+                                                                            for="roleOperator">Operator</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input
+                                                                            class="form-check-input"
+                                                                            type="radio"
+                                                                            name="role"
+                                                                            id="roleAdmin"
+                                                                            value="admin"
+                                                                            <%=data.role=="admin"
+                                                                            ? "checked" : "" %>>
+                                                                        <label
+                                                                            class="form-check-label"
+                                                                            for="roleAdmin">Admin</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <% } %>
+                                                    </div>
+                                                    <div class="card-footer">
+                                                        <div class="col-sm-5">
+                                                            <button type="submit"
+                                                                class="btn btn-success btn-icon-split">
+                                                                <span class="icon text-white-50">
+                                                                    <i class="fas fa-fw fa-database"></i>
+                                                                </span>
+                                                                <span class="text">
+                                                                    <%= data.operation ? "Update" : "Save" %>
+                                                                </span>
+                                                            </button>
+                                                            <% if (!data.operation) {%>
+                                                                <a href="/users" class="btn btn-warning btn-icon-split">
+                                                                    <span class="icon text-white-50">
+                                                                        <i class="fas fa-fw fa-undo-alt"></i>
+                                                                    </span>
+                                                                    <span class="text">Back</span>
+                                                                </a>
+                                                                <% }%>
+                                                        </div>
+                                                    </div>
+                                                </form>
                                             </div>
-                                        </div>
-                                        <div class="card-footer">
-                                            <div class="col-sm-5">
-                                                <button type="submit" class="btn btn-success btn-icon-split">
-                                                    <span class="icon text-white-50">
-                                                        <i class="fas fa-fw fa-database"></i>
-                                                    </span>
-                                                    <span class="text">Save</span>
-                                                </button>
-                                                <a href="/users" class="btn btn-warning btn-icon-split">
-                                                    <span class="icon text-white-50">
-                                                        <i class="fas fa-fw fa-undo-alt"></i>
-                                                    </span>
-                                                    <span class="text">Back</span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
 
                             </div>
                             <!-- End of Content Wrapper -->

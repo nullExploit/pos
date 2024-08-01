@@ -9,7 +9,17 @@ class User {
     this.role = role;
   }
 
-  static async all(id, email, name, role, page, limit, offset, sortBy, sortMode) {
+  static async all(
+    id,
+    email,
+    name,
+    role,
+    page,
+    limit,
+    offset,
+    sortBy,
+    sortMode
+  ) {
     try {
       const queryParams = [];
       const params = [];
@@ -18,7 +28,9 @@ class User {
       const realTotal = await db.query(sql);
 
       if (id) {
-        queryParams.push(`CAST(userid AS TEXT) LIKE '%' || $${queryParams.length + 1} || '%'`);
+        queryParams.push(
+          `CAST(userid AS TEXT) LIKE '%' || $${queryParams.length + 1} || '%'`
+        );
         params.push(id);
       }
 
@@ -66,21 +78,12 @@ class User {
     }
   }
 
-  static async query(query) {
-    try {
-      const result = await db.query(query);
-      return result
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
   static async get(email) {
     try {
       const data = await db.query("SELECT * FROM users WHERE email = $1", [
         email,
       ]);
-      
+
       return data.rows[0];
     } catch (e) {
       console.log(e);
@@ -122,12 +125,46 @@ class User {
     }
   }
 
-  static async update(id, email, name, role) {
+  static async changepass(id, oldpass, newpass) {
     try {
-      await db.query(
-        "UPDATE users SET email = $1, name = $2, role = $3 WHERE userid = $4",
-        [email, name, role, id]
-      );
+      const user = await User.getId(id);
+      const match = await bcrypt.compare(oldpass, user.password);
+
+      if (match) {
+        const encrypted = await bcrypt.hash(newpass, 10);
+        await User.update(
+          user.userid,
+          user.email,
+          user.name,
+          user.role,
+          encrypted
+        );
+      }
+
+      return match;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  static async update(id, email, name, role, password) {
+    try {
+      if (password) {
+        await db.query(
+          "UPDATE users SET email = $1, name = $2, role = $3, password = $4 WHERE userid = $5",
+          [email, name, role, password, id]
+        );
+      } else if (role) {
+        await db.query(
+          "UPDATE users SET email = $1, name = $2, role = $3 WHERE userid = $4",
+          [email, name, role, id]
+        );
+      } else if (!role) {
+        await db.query(
+          "UPDATE users SET email = $1, name = $2 WHERE userid = $3",
+          [email, name, id]
+        );
+      }
     } catch (e) {
       console.log(e);
     }

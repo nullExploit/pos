@@ -28,7 +28,8 @@
                                 <!-- Page Heading -->
                                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                                     <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-                                    <button onclick="download_csv_file()" id="generateReport" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                    <button onclick="download_csv_file(`${`<%= csv %>`}`)" id="generateReport"
+                                        class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                             class="fas fa-download fa-sm text-white-50"></i> Generate Report</button>
                                 </div>
 
@@ -285,18 +286,6 @@
                             <script src="/vendor/chart.js/Chart.min.js"></script>
                             <script src="/javascripts/demo/chart-area-demo.js"></script>
                             <script src="/javascripts/demo/chart-pie-demo.js"></script>
+                            <script src="/javascripts/csv.js"></script>
 
-                            <script>
-                                function download_csv_file() {
-
-                                        const csv = `${`<%= csv %>`}`;
-
-                                        const hiddenElement = document.createElement('a');
-                                        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
-                                        hiddenElement.target = '_blank';
-
-                                        hiddenElement.download = 'report.csv';
-                                        hiddenElement.click();
-                                    }  
-                            </script>
                             <%- include('partials/footer') %>
