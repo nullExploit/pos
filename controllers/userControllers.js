@@ -29,6 +29,7 @@ function postIndex(req, res) {
         id: data.userid,
         email: data.email,
         name: data.name,
+        role: data.role
       };
       return res.redirect("/dashboard");
     });
@@ -36,7 +37,10 @@ function postIndex(req, res) {
 }
 
 function getUser(req, res) {
-  res.render("users/view", { username: req.session.user.name });
+  res.render("users/view", {
+    username: req.session.user.name,
+    role: req.session.user.role,
+  });
 }
 
 async function getUserAPI(req, res) {
@@ -57,13 +61,21 @@ async function getUserAPI(req, res) {
 }
 
 function getAddUser(req, res) {
-  res.render("users/form", { data: {}, username: req.session.user.name });
+  res.render("users/form", {
+    data: {},
+    username: req.session.user.name,
+    role: req.session.user.role,
+  });
 }
 
 function getEditUser(req, res) {
   const id = req.params.id;
   User.getId(id).then((data) => {
-    res.render("users/form", { data, username: req.session.user.name });
+    res.render("users/form", {
+      data,
+      username: req.session.user.name,
+      role: req.session.user.role,
+    });
   });
 }
 
@@ -95,6 +107,7 @@ function getProfile(req, res) {
     res.render("users/form", {
       data,
       username: req.session.user.name,
+      role: req.session.user.role,
       failedMessage: req.flash("failedMessage"),
       successMessage: req.flash("successMessage"),
     });
@@ -105,6 +118,7 @@ function getPassword(req, res) {
   res.render("users/form", {
     data: { operation: "Change Password" },
     username: req.session.user.name,
+    role: req.session.user.role,
     failedMessage: req.flash("failedMessage"),
     successMessage: req.flash("successMessage"),
   });

@@ -6,6 +6,7 @@ const { readdirSync, unlinkSync } = require("node:fs");
 function getGood(req, res) {
   res.render("goods/view", {
     username: req.session.user.name,
+    role: req.session.user.role,
   });
 }
 
@@ -28,9 +29,9 @@ async function getGoodAPI(req, res) {
 }
 
 function getGoodPurchaseAPI(req, res) {
-  Good.getAll().then(data => {
-    res.json(data)
-  })
+  Good.getAll().then((data) => {
+    res.json(data);
+  });
 }
 
 function getAddGood(req, res) {
@@ -38,6 +39,7 @@ function getAddGood(req, res) {
     res.render("goods/form", {
       data: {},
       username: req.session.user.name,
+      role: req.session.user.role,
       dataUnit,
     });
   });
@@ -50,6 +52,7 @@ function getEditGood(req, res) {
       res.render("goods/form", {
         data,
         username: req.session.user.name,
+        role: req.session.user.role,
         dataUnit,
       });
     });
@@ -147,5 +150,5 @@ module.exports = {
   editGood,
   deleteGood,
   getGoodAPI,
-  getGoodPurchaseAPI
+  getGoodPurchaseAPI,
 };

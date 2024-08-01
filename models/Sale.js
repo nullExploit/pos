@@ -79,7 +79,7 @@ class Sale {
       const filteredTotal = await db.query(sql, params);
 
       sql =
-        "SELECT sales.invoice, sales.totalsum, TO_CHAR(sales.time, 'DD Mon YYYY HH24:MI:SS') AS timeformatted, sales.pay, sales.change, customers.name AS customername FROM sales LEFT JOIN customers ON sales.customer = customers.customerid";
+        "SELECT sales.invoice, sales.totalsum, TO_CHAR(sales.time, 'DD Mon YYYY HH24:MI:SS') AS timeformatted, sales.pay, sales.change, sales.operator, customers.name AS customername FROM sales LEFT JOIN customers ON sales.customer = customers.customerid";
 
       if (queryParams.length) sql += ` WHERE ${queryParams.join(" OR ")}`;
 

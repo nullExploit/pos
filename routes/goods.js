@@ -12,15 +12,16 @@ const {
 var router = express.Router();
 
 const hasSession = require("../helper/util");
+const checkRole = require("../helper/checkrole");
 
-router.get("/", hasSession, getGood);
-router.get("/add", hasSession, getAddGood);
-router.get("/edit/:id", hasSession, getEditGood);
-router.get("/delete/:id", hasSession, deleteGood);
-router.get("/api", hasSession, getGoodAPI);
-router.get("/itemsapi", hasSession, getGoodPurchaseAPI)
+router.get("/", hasSession, checkRole, getGood);
+router.get("/add", hasSession, checkRole, getAddGood);
+router.get("/edit/:id", hasSession, checkRole, getEditGood);
+router.get("/delete/:id", hasSession, checkRole, deleteGood);
+router.get("/api", hasSession, checkRole, getGoodAPI);
+router.get("/itemsapi", hasSession, getGoodPurchaseAPI);
 
-router.post("/add", hasSession, addGood);
-router.post("/edit/:id", hasSession, editGood);
+router.post("/add", hasSession, checkRole, addGood);
+router.post("/edit/:id", hasSession, checkRole, editGood);
 
 module.exports = router;

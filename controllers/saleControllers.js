@@ -6,6 +6,7 @@ const Customer = require("../models/Customer");
 function getSale(req, res) {
   res.render("sales/view", {
     username: req.session.user.name,
+    role: req.session.user.role,
     userid: req.session.user.id,
   });
 }
@@ -38,6 +39,7 @@ function getEditSale(req, res) {
           dataInv,
           dataCus,
           username: dataInv?.username,
+          role: req.session.user.role,
           userid: dataInv?.userid,
         });
       });

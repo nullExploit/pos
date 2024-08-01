@@ -1,7 +1,10 @@
 const Supplier = require("../models/Supplier");
 
 function getSupplier(req, res) {
-  res.render("suppliers/view", { username: req.session.user.name });
+  res.render("suppliers/view", {
+    username: req.session.user.name,
+    role: req.session.user.role,
+  });
 }
 
 async function getSupplierAPI(req, res) {
@@ -21,13 +24,21 @@ async function getSupplierAPI(req, res) {
 }
 
 function getAddSupplier(req, res) {
-  res.render("suppliers/form", { data: {}, username: req.session.user.name });
+  res.render("suppliers/form", {
+    data: {},
+    username: req.session.user.name,
+    role: req.session.user.role,
+  });
 }
 
 function getEditSupplier(req, res) {
   const id = req.params.id;
   Supplier.get(id).then((data) => {
-    res.render("suppliers/form", { data, username: req.session.user.name });
+    res.render("suppliers/form", {
+      data,
+      username: req.session.user.name,
+      role: req.session.user.role,
+    });
   });
 }
 
@@ -60,5 +71,5 @@ module.exports = {
   addSupplier,
   editSupplier,
   deleteSupplier,
-  getSupplierAPI
+  getSupplierAPI,
 };

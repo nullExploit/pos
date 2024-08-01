@@ -6,6 +6,7 @@ const Supplier = require("../models/Supplier");
 function getPurchase(req, res) {
   res.render("purchases/view", {
     username: req.session.user.name,
+    role: req.session.user.role,
     userid: req.session.user.id,
   });
 }
@@ -37,6 +38,7 @@ function getEditPurchase(req, res) {
           dataInv,
           dataSup,
           username: dataInv?.username,
+          role: req.session.user.role,
           userid: dataInv?.userid,
         });
       });

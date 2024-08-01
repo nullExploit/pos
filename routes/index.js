@@ -3,6 +3,7 @@ var router = express.Router();
 
 const { getIndex, postIndex } = require("../controllers/userControllers");
 const hasSession = require("../helper/util");
+const checkRole = require("../helper/checkrole");
 const Sale = require("../models/Sale");
 const Purchase = require("../models/Purchase");
 const { stringify } = require("csv");
@@ -10,13 +11,13 @@ const { stringify } = require("csv");
 /* GET home page. */
 router.get("/", getIndex);
 
-router.get("/dashboard", hasSession, async (req, res) => {
+router.get("/dashboard", hasSession, checkRole, async (req, res) => {
   const { startdate, enddate } = req.query;
 
   const totalPurchases = await Purchase.total(startdate, enddate);
   const salesData = await Sale.total(startdate, enddate);
   const tableReport = await Sale.dashboardApi("", 1, "", "", "date", "asc");
-  
+
   stringify(
     tableReport.report,
     {
@@ -31,6 +32,7 @@ router.get("/dashboard", hasSession, async (req, res) => {
     (err, data) => {
       res.render("dashboard", {
         username: req.session.user.name,
+        role: req.session.user.role,
         totaldata: {
           purchase: `Rp ${
             Number(totalPurchases ? totalPurchases : 0)
@@ -81,10 +83,9 @@ router.get("/dashboard", hasSession, async (req, res) => {
       });
     }
   );
-
 });
 
-router.get("/dashboard/api", hasSession, async (req, res) => {
+router.get("/dashboard/api", hasSession, checkRole, async (req, res) => {
   const { draw, length, start, search, columns, order } = req.query;
 
   const data = await Sale.dashboardApi(

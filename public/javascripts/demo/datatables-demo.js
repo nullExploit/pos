@@ -253,7 +253,7 @@ function forDashboard() {
         },
       },
     ],
-    footerCallback: function (row, data, start, end, display) {
+    footerCallback: function () {
       const api = this.api();
 
       const intVal = (i) => {
@@ -311,17 +311,30 @@ function forDashboard() {
   });
 }
 
-function actions(data) {
-  return `
-  <a href="${path}/edit/${data}"
-    class="btn btn-success btn-circle"><i
-        class="fas fa-fw fa-info-circle"></i></a>
+function actions(data, value, row) {
+  const para =
+    path == "/purchases"
+      ? document.getElementById("purchasePara")
+      : path == "/sales"
+      ? document.getElementById("salePara")
+      : "";
 
-<a href="${path}/delete/${data}"
+  const role = para.ariaValueNow;
+  const user = para.ariaLabel;
+
+  return `
+  <button onclick="window.location.pathname = '${path}/edit/${data}'" 
+  ${role == 1 ? "" : row.operator == user ? "" : "disabled"}
+  aria-label="${row.operator}"
+    class="btn btn-success btn-circle"><i
+        class="fas fa-fw fa-info-circle"></i></button>
+
+<button onclick="window.location.pathname = '${path}/delete/${data}'"
+${role == 1 ? "" : row.operator == user ? "" : "disabled"}
     class="btn btn-danger btn-circle"
     data-toggle="modal"
     data-target="#deleteModal${data}"><i
-        class="fas fa-fw fa-trash"></i></a>
+        class="fas fa-fw fa-trash"></i></button>
 
 
   <div class="modal fade" id="deleteModal${data}"

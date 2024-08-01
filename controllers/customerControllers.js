@@ -1,7 +1,10 @@
 const Customer = require("../models/Customer");
 
 function getCustomer(req, res) {
-  res.render("customers/view", { username: req.session.user.name });
+  res.render("customers/view", {
+    username: req.session.user.name,
+    role: req.session.user.role,
+  });
 }
 
 async function getCustomerAPI(req, res) {
@@ -21,13 +24,21 @@ async function getCustomerAPI(req, res) {
 }
 
 function getAddCustomer(req, res) {
-  res.render("customers/form", { data: {}, username: req.session.user.name });
+  res.render("customers/form", {
+    data: {},
+    username: req.session.user.name,
+    role: req.session.user.role,
+  });
 }
 
 function getEditCustomer(req, res) {
   const id = req.params.id;
   Customer.get(id).then((data) => {
-    res.render("customers/form", { data, username: req.session.user.name });
+    res.render("customers/form", {
+      data,
+      username: req.session.user.name,
+      role: req.session.user.role,
+    });
   });
 }
 

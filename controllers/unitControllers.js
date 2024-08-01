@@ -1,7 +1,10 @@
 const Unit = require("../models/Unit");
 
 function getUnit(req, res) {
-  res.render("units/view", { username: req.session.user.name });
+  res.render("units/view", {
+    username: req.session.user.name,
+    role: req.session.user.role,
+  });
 }
 
 async function getUnitAPI(req, res) {
@@ -20,13 +23,21 @@ async function getUnitAPI(req, res) {
 }
 
 function getAddUnit(req, res) {
-  res.render("units/form", { data: {}, username: req.session.user.name });
+  res.render("units/form", {
+    data: {},
+    username: req.session.user.name,
+    role: req.session.user.role,
+  });
 }
 
 function getEditUnit(req, res) {
   const id = req.params.id;
   Unit.get(id).then((data) => {
-    res.render("units/form", { data, username: req.session.user.name });
+    res.render("units/form", {
+      data,
+      username: req.session.user.name,
+      role: req.session.user.role,
+    });
   });
 }
 
@@ -59,5 +70,5 @@ module.exports = {
   addUnit,
   editUnit,
   deleteUnit,
-  getUnitAPI
+  getUnitAPI,
 };

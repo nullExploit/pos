@@ -71,7 +71,7 @@ class Purchase {
       const filteredTotal = await db.query(sql, params);
 
       sql =
-        "SELECT purchases.invoice, purchases.totalsum, TO_CHAR(purchases.time, 'DD Mon YYYY HH24:MI:SS') AS timeformatted, users.name AS username, suppliers.name AS suppliername FROM purchases LEFT JOIN users ON purchases.operator = users.userid LEFT JOIN suppliers ON purchases.supplier = suppliers.supplierid";
+        "SELECT purchases.invoice, purchases.totalsum, TO_CHAR(purchases.time, 'DD Mon YYYY HH24:MI:SS') AS timeformatted, purchases.operator, users.name AS username, suppliers.name AS suppliername FROM purchases LEFT JOIN users ON purchases.operator = users.userid LEFT JOIN suppliers ON purchases.supplier = suppliers.supplierid";
 
       if (queryParams.length) sql += ` WHERE ${queryParams.join(" OR ")}`;
 
