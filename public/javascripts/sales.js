@@ -132,7 +132,7 @@ if (path.includes("/sales/edit")) {
             change: Number(
               inputChange.value
                 .replace("Rp", "")
-                .replace(".", "")
+                .replaceAll(".", "")
                 .replace(",", ".")
             ),
           }),
@@ -149,7 +149,7 @@ if (path.includes("/sales/edit")) {
     const total = Number(
       inputTotalSummary.value
         .replace("Rp", "")
-        .replace(".", "")
+        .replaceAll(".", "")
         .replace(",", ".")
     );
 

@@ -27,7 +27,8 @@ class Sale {
     try {
       const queryParams = [];
       const params = [];
-      let sql = "SELECT COUNT(*) AS total FROM sales LEFT JOIN customers ON sales.customer = customers.customerid";
+      let sql =
+        "SELECT COUNT(*) AS total FROM sales LEFT JOIN customers ON sales.customer = customers.customerid";
 
       const realTotal = await db.query(sql);
 
@@ -40,7 +41,9 @@ class Sale {
 
       if (time) {
         queryParams.push(
-          `TO_CHAR(time, 'DD Mon YYYY HH24:MI:SS') LIKE '%' || $${queryParams.length + 1} || '%'`
+          `TO_CHAR(time, 'DD Mon YYYY HH24:MI:SS') LIKE '%' || $${
+            queryParams.length + 1
+          } || '%'`
         );
         params.push(time);
       }
@@ -67,9 +70,7 @@ class Sale {
       }
 
       if (customer) {
-        queryParams.push(
-          `name LIKE '%' || $${queryParams.length + 1} || '%'`
-        );
+        queryParams.push(`name LIKE '%' || $${queryParams.length + 1} || '%'`);
         params.push(customer);
       }
 
@@ -150,11 +151,172 @@ class Sale {
 
   static async del(invoice) {
     try {
-      await db.query("DELETE FROM saleitems WHERE invoice = $1", [invoice])
+      await db.query("DELETE FROM saleitems WHERE invoice = $1", [invoice]);
       await db.query("DELETE FROM sales WHERE invoice = $1", [invoice]);
     } catch (e) {
       console.log(e);
     }
+  }
+
+  static async total(startdate, enddate) {
+    try {
+      const queryParams = [];
+      const params = [];
+      const monthsData = [];
+      const tableReport = [];
+      let monthsLabel = [];
+
+      let sql = "SELECT COUNT(*) AS totalcount FROM sales";
+
+      if (startdate) {
+        queryParams.push(`time > $${queryParams.length + 1}`);
+        params.push(startdate);
+      }
+
+      if (enddate) {
+        queryParams.push(`time < $${queryParams.length + 1}`);
+        params.push(enddate);
+      }
+
+      if (queryParams.length) sql += ` WHERE ${queryParams.join(" AND ")}`;
+
+      const count = await db.query(sql, params);
+
+      sql = "SELECT SUM(totalsum) AS total FROM sales";
+
+      if (queryParams.length) sql += ` WHERE ${queryParams.join(" AND ")}`;
+
+      const data = await db.query(sql, params);
+
+      sql = "SELECT COUNT(*) AS totaldirect FROM sales WHERE customer = 3";
+
+      if (queryParams.length) sql += ` AND ${queryParams.join(" AND ")}`;
+
+      const totaldirect = await db.query(sql, params);
+
+      sql = "SELECT COUNT(*) AS totalcustomer FROM sales WHERE customer != 3";
+
+      if (queryParams.length) sql += ` AND ${queryParams.join(" AND ")}`;
+
+      const totalcustomer = await db.query(sql, params);
+
+      const purchaseMonths = await db.query(
+        `SELECT TO_CHAR(time, 'Mon YY') AS purchasemonth FROM purchases ${
+          queryParams.length ? `WHERE ${queryParams.join(" AND ")}` : ``
+        }`,
+        params
+      );
+
+      const saleMonths = await db.query(
+        `SELECT TO_CHAR(time, 'Mon YY') AS salemonth FROM sales ${
+          queryParams.length ? `WHERE ${queryParams.join(" AND ")}` : ``
+        }`,
+        params
+      );
+
+      purchaseMonths.rows.forEach((row) => {
+        monthsLabel.push(row.purchasemonth);
+      });
+
+      saleMonths.rows.forEach((row) => {
+        monthsLabel.push(row.salemonth);
+      });
+
+      monthsLabel = [...new Set(monthsLabel)];
+
+      monthsLabel.sort((x, y) => {
+        let a = new Date(x),
+          b = new Date(y);
+        return a - b;
+      });
+
+      for (const month of monthsLabel) {
+        const data = await db.query("SELECT * FROM totalearning($1)", [month]);
+        monthsData.push(data.rows[0].res);
+      }
+
+      return {
+        total: data.rows[0].total,
+        totalCount: count.rows[0].totalcount,
+        totalPersentage: [
+          Math.round(
+            (totaldirect.rows[0].totaldirect / count.rows[0].totalcount) * 100
+          ),
+          Math.round(
+            (totalcustomer.rows[0].totalcustomer / count.rows[0].totalcount) *
+              100
+          ),
+        ],
+        totalEarning: {
+          months: monthsLabel,
+          monthsData,
+        },
+      };
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  static async dashboardApi(month, page, limit, offset, sortBy, sortMode) {
+    const queryParams = [];
+    const params = [];
+    let sql = "SELECT COUNT(*) AS total FROM earning()";
+
+    const realTotal = await db.query(sql);
+
+    if (month) {
+      queryParams.push(
+        `month LIKE '%' || $${queryParams.length + 1} || '%'`,
+        `CAST(expense AS TEXT) LIKE '%' || $${queryParams.length + 2} || '%'`,
+        `CAST(revenue AS TEXT) LIKE '%' || $${queryParams.length + 3} || '%'`,
+        `CAST(earning AS TEXT) LIKE '%' || $${queryParams.length + 4} || '%'`
+      );
+
+      params.push(month, month, month, month);
+    }
+
+    if (queryParams.length) sql += ` WHERE ${queryParams.join(" OR ")}`;
+
+    const filteredTotal = await db.query(sql, params);
+
+    sql = "SELECT * FROM earning()";
+
+    if (queryParams.length) sql += ` WHERE ${queryParams.join(" OR ")}`;
+
+    sql += ` ORDER BY ${sortBy == "month" ? "date" : sortBy} ${sortMode}`;
+
+    if (limit) {
+      sql += ` LIMIT $${queryParams.length + 1} OFFSET $${
+        queryParams.length + 2
+      }`;
+
+      params.push(limit, offset);
+    }
+
+    const data = await db.query(sql, params);
+
+    sql =
+      "SELECT COALESCE(SUM(expense), 0) AS totalexpense, COALESCE(SUM(revenue), 0) AS totalrevenue, COALESCE(SUM(earning), 0) AS totalearning FROM earning()";
+
+    if (queryParams.length) sql += ` WHERE ${queryParams.join(" OR ")}`;
+
+    if (limit) {
+      sql += ` LIMIT $${queryParams.length + 1} OFFSET $${
+        queryParams.length + 2
+      }`;
+    }
+
+    const total = await db.query(sql, params);
+    const report = await db.query("SELECT month, expense, revenue, earning FROM earning()")
+
+    return {
+      report: report.rows,
+      totaldata: total.rows[0],
+      draw: Number(page),
+      recordsTotal: Number(realTotal.rows[0].total),
+      recordsFiltered: Number(filteredTotal.rows[0].total),
+      data: data.rows,
+    };
   }
 }
 

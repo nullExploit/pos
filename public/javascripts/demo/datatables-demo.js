@@ -24,12 +24,16 @@ switch (path) {
   case "/sales":
     $(document).ready(forSales);
     break;
+  case "/dashboard":
+    $(document).ready(forDashboard);
+    break;
 }
 
 function forUsers() {
   $("#dataTable").DataTable({
     processing: true,
     serverSide: true,
+    aoColumnDefs: [{ bSortable: false, aTargets: [-1] }],
     ajax: "/users/api",
     columns: [
       { data: "userid" },
@@ -39,22 +43,13 @@ function forUsers() {
       { data: "userid", render: actions },
     ],
   });
-
-  $("#foot").html(`
-    <tr>
-        <th>User ID</th>
-        <th>Email</th>
-        <th>Name</th>
-        <th>Role</th>
-        <th>Action</th>
-    </tr>
-    `);
 }
 
 function forUnits() {
   $("#dataTable").DataTable({
     processing: true,
     serverSide: true,
+    aoColumnDefs: [{ bSortable: false, aTargets: [-1] }],
     ajax: "/units/api",
     columns: [
       { data: "unit" },
@@ -63,15 +58,6 @@ function forUnits() {
       { data: "unit", render: actions },
     ],
   });
-
-  $("#foot").html(`
-     <tr>
-        <th>Unit</th>
-        <th>Name</th>
-        <th>Note</th>
-        <th>Action</th>
-    </tr>
-    `);
 }
 
 function forGoods() {
@@ -114,25 +100,13 @@ function forGoods() {
       { data: "barcode", render: actions },
     ],
   });
-
-  $("#foot").html(`
-    <tr>
-        <th>Barcode</th>
-        <th>Name</th>
-        <th>Stock</th>
-        <th>Unit</th>
-        <th>Purchase Price</th>
-        <th>Selling Price</th>
-        <th>Picture</th>
-        <th>Action</th>
-    </tr>
-    `);
 }
 
 function forSuppliers() {
   $("#dataTable").DataTable({
     processing: true,
     serverSide: true,
+    aoColumnDefs: [{ bSortable: false, aTargets: [-1] }],
     ajax: "/suppliers/api",
     columns: [
       { data: "supplierid" },
@@ -142,22 +116,13 @@ function forSuppliers() {
       { data: "supplierid", render: actions },
     ],
   });
-
-  $("#foot").html(`
-     <tr>
-        <th>Supplier ID</th>
-        <th>Name</th>
-        <th>Address</th>
-        <th>Phone</th>
-        <th>Action</th>
-    </tr>
-    `);
 }
 
 function forPurchases() {
   $("#dataTable").DataTable({
     processing: true,
     serverSide: true,
+    aoColumnDefs: [{ bSortable: false, aTargets: [-1] }],
     ajax: "/purchases/api",
     columns: [
       { data: "invoice" },
@@ -182,23 +147,13 @@ function forPurchases() {
       { data: "invoice", render: actions },
     ],
   });
-
-  $("#foot").html(`
-     <tr>
-        <th>Invoice</th>
-        <th>Time</th>
-        <th>Total Summary</th>
-        <th>Supplier</th>
-        <th>Operator</th>
-        <th>Action</th>
-    </tr>
-    `);
 }
 
 function forCustomers() {
   $("#dataTable").DataTable({
     processing: true,
     serverSide: true,
+    aoColumnDefs: [{ bSortable: false, aTargets: [-1] }],
     ajax: "/customers/api",
     columns: [
       { data: "customerid" },
@@ -208,22 +163,13 @@ function forCustomers() {
       { data: "customerid", render: actions },
     ],
   });
-
-  $("#foot").html(`
-     <tr>
-        <th>Customer ID</th>
-        <th>Name</th>
-        <th>Address</th>
-        <th>Phone</th>
-        <th>Action</th>
-    </tr>
-    `);
 }
 
 function forSales() {
   $("#dataTable").DataTable({
     processing: true,
     serverSide: true,
+    aoColumnDefs: [{ bSortable: false, aTargets: [-1] }],
     ajax: "/sales/api",
     columns: [
       { data: "invoice" },
@@ -267,18 +213,102 @@ function forSales() {
       { data: "invoice", render: actions },
     ],
   });
+}
 
-  $("#foot").html(`
-     <tr>
-        <th>Invoice</th>
-        <th>Time</th>
-        <th>Total Summary</th>
-        <th>Pay</th>
-        <th>Change</th>
-        <th>Customer</th>
-        <th>Action</th>
-    </tr>
-    `);
+function forDashboard() {
+  $("#dataTable").DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: "/dashboard/api",
+    columns: [
+      { data: "month" },
+      {
+        data: "expense",
+        render: (data) => {
+          return `Rp ${
+            Number(data).toLocaleString("in").includes(",")
+              ? Number(data).toLocaleString("in")
+              : Number(data).toLocaleString("in") + ",00"
+          }`;
+        },
+      },
+      {
+        data: "revenue",
+        render: (data) => {
+          return `Rp ${
+            Number(data).toLocaleString("in").includes(",")
+              ? Number(data).toLocaleString("in")
+              : Number(data).toLocaleString("in") + ",00"
+          }`;
+        },
+      },
+      {
+        data: "earning",
+        render: (data) => {
+          return `Rp ${
+            Number(data).toLocaleString("in").includes(",")
+              ? Number(data).toLocaleString("in")
+              : Number(data).toLocaleString("in") + ",00"
+          }`;
+        },
+      },
+    ],
+    footerCallback: function (row, data, start, end, display) {
+      const api = this.api();
+
+      const intVal = (i) => {
+        return typeof i === "string"
+          ? i.replace(/[\$,]/g, "") * 1
+          : typeof i === "number"
+          ? i
+          : 0;
+      };
+
+      const totalexpense = api
+        .column(1)
+        .data()
+        .reduce((a, b) => {
+          return intVal(a) + intVal(b);
+        });
+
+      const totalrevenue = api
+        .column(2)
+        .data()
+        .reduce((a, b) => {
+          return intVal(a) + intVal(b);
+        });
+
+      const totalearning = api
+        .column(3)
+        .data()
+        .reduce((a, b) => {
+          return intVal(a) + intVal(b);
+        });
+
+      $(api.column(0).footer()).html("Total");
+      $(api.column(1).footer()).html(
+        `Rp ${
+          Number(totalexpense).toLocaleString("in").includes(",")
+            ? Number(totalexpense).toLocaleString("in")
+            : Number(totalexpense).toLocaleString("in") + ",00"
+        }`
+      );
+      $(api.column(2).footer()).html(
+        `Rp ${
+          Number(totalrevenue).toLocaleString("in").includes(",")
+            ? Number(totalrevenue).toLocaleString("in")
+            : Number(totalrevenue).toLocaleString("in") + ",00"
+        }`
+      );
+      $(api.column(3).footer()).html(
+        `Rp ${
+          Number(totalearning).toLocaleString("in").includes(",")
+            ? Number(totalearning).toLocaleString("in")
+            : Number(totalearning).toLocaleString("in") + ",00"
+        }`
+      );
+    },
+  });
 }
 
 function actions(data) {

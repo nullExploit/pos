@@ -5,17 +5,17 @@ function getCustomer(req, res) {
 }
 
 async function getCustomerAPI(req, res) {
-  const { draw, length, start, search } = req.query;
+  const { draw, length, start, search, columns, order } = req.query;
   const result = await Customer.all(
-    search.value,
-    search.value,
-    search.value,
-    search.value,
+    search?.value,
+    search?.value,
+    search?.value,
+    search?.value,
     draw,
     length,
     start,
-    req.query.columns[req.query.order[0].column].data,
-    req.query.order[0].dir
+    columns ? columns[req.query.order[0].column].data : "customerid",
+    order ? order[0].dir : "desc"
   );
   res.json(result);
 }

@@ -11,19 +11,19 @@ function getSale(req, res) {
 }
 
 async function getSaleAPI(req, res) {
-  const { draw, length, start, search } = req.query;
+  const { draw, length, start, search, columns, order } = req.query;
   const result = await Sale.all(
-    search.value,
-    search.value,
-    search.value,
-    search.value,
-    search.value,
-    search.value,
+    search?.value,
+    search?.value,
+    search?.value,
+    search?.value,
+    search?.value,
+    search?.value,
     draw,
     length,
     start,
-    req.query.columns[req.query.order[0].column].data,
-    req.query.order[0].dir
+    columns ? columns[req.query.order[0].column].data : "invoice",
+    order ? order[0].dir : "desc"
   );
   res.json(result);
 }

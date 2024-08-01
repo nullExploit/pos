@@ -24,7 +24,8 @@ class Purchase {
     try {
       const queryParams = [];
       const params = [];
-      let sql = "SELECT COUNT(*) AS total FROM purchases LEFT JOIN users ON purchases.operator = users.userid LEFT JOIN suppliers ON purchases.supplier = suppliers.supplierid";
+      let sql =
+        "SELECT COUNT(*) AS total FROM purchases LEFT JOIN users ON purchases.operator = users.userid LEFT JOIN suppliers ON purchases.supplier = suppliers.supplierid";
 
       const realTotal = await db.query(sql);
 
@@ -37,7 +38,9 @@ class Purchase {
 
       if (time) {
         queryParams.push(
-          `TO_CHAR(time, 'DD Mon YYYY HH24:MI:SS') LIKE '%' || $${queryParams.length + 1} || '%'`
+          `TO_CHAR(time, 'DD Mon YYYY HH24:MI:SS') LIKE '%' || $${
+            queryParams.length + 1
+          } || '%'`
         );
         params.push(time);
       }
@@ -142,6 +145,32 @@ class Purchase {
     try {
       await db.query("DELETE FROM purchaseitems WHERE invoice = $1", [invoice]);
       await db.query("DELETE FROM purchases WHERE invoice = $1", [invoice]);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  static async total(startdate, enddate) {
+    try {
+      const queryParams = [];
+      const params = [];
+
+      let sql = "SELECT SUM(totalsum) AS total FROM purchases";
+
+      if (startdate) {
+        queryParams.push(`time > $${queryParams.length + 1}`);
+        params.push(startdate);
+      }
+
+      if (enddate) {
+        queryParams.push(`time < $${queryParams.length + 1}`);
+        params.push(enddate);
+      }
+
+      if (queryParams.length) sql += ` WHERE ${queryParams.join(" AND ")}`;
+
+      const data = await db.query(sql, params)
+      return data.rows[0].total;
     } catch (e) {
       console.log(e);
     }
