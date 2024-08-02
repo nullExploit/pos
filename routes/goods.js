@@ -8,6 +8,7 @@ const {
   editGood,
   getGoodAPI,
   getGoodPurchaseAPI,
+  goodAlert,
 } = require("../controllers/goodControllers");
 var router = express.Router();
 
@@ -20,6 +21,7 @@ router.get("/edit/:id", hasSession, checkRole, getEditGood);
 router.get("/delete/:id", hasSession, checkRole, deleteGood);
 router.get("/api", hasSession, checkRole, getGoodAPI);
 router.get("/itemsapi", hasSession, getGoodPurchaseAPI);
+router.get("/alertapi", hasSession, checkRole, goodAlert)
 
 router.post("/add", hasSession, checkRole, addGood);
 router.post("/edit/:id", hasSession, checkRole, editGood);

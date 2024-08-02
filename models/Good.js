@@ -121,6 +121,15 @@ class Good {
     }
   }
 
+  static async getAlert() {
+    try {
+      const data = await db.query("SELECT * FROM goods WHERE stock <= 5")
+      return data.rows
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   static async create(
     barcode,
     name,

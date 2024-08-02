@@ -128,6 +128,12 @@ function editGood(req, res) {
   }
 }
 
+function goodAlert(req, res) {
+  Good.getAlert().then((data) => {
+    res.json(data);
+  });
+}
+
 function deleteGood(req, res) {
   const id = req.params.id;
 
@@ -151,4 +157,5 @@ module.exports = {
   deleteGood,
   getGoodAPI,
   getGoodPurchaseAPI,
+  goodAlert
 };

@@ -15,7 +15,7 @@ function postIndex(req, res) {
   }
 
   User.get(email).then((data) => {
-    if (!data.email) {
+    if (!data?.email) {
       req.flash("failedMessage", "User not found!");
       return res.redirect("/");
     }
