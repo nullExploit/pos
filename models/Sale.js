@@ -151,7 +151,6 @@ class Sale {
 
   static async del(invoice) {
     try {
-      await db.query("DELETE FROM saleitems WHERE invoice = $1", [invoice]);
       await db.query("DELETE FROM sales WHERE invoice = $1", [invoice]);
     } catch (e) {
       console.log(e);

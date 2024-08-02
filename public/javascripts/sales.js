@@ -103,6 +103,10 @@ if (path.includes("/sales/edit")) {
         document.getElementById("inputStock").value -= Number(
           inputQuantity.value
         );
+        socket.emit("addnotif", {
+          stock: Number(document.getElementById("inputStock").value),
+        });
+        if (notif) getNotification();
       }
     } catch (e) {
       console.log(e);
@@ -235,7 +239,7 @@ if (path.includes("/sales/edit")) {
                           document.getElementById("inputInvoice").value
                         }/${Number(
           data.id
-        )}" class="btn btn-danger btn-circle"><i class="fas fa-fw fa-trash"></i></a>
+        )}" onclick="socket.emit('updatenotif', {})" class="btn btn-danger btn-circle"><i class="fas fa-fw fa-trash"></i></a>
                     </td>    
             </tr>
             `;

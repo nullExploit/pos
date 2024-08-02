@@ -1,6 +1,8 @@
 // Call the dataTables jQuery plugin
 
 const path = window.location.pathname;
+const socket = io();
+const notif = document.getElementById("notification");
 
 switch (path) {
   case "/users":
@@ -269,21 +271,21 @@ function forDashboard() {
         .data()
         .reduce((a, b) => {
           return intVal(a) + intVal(b);
-        });
+        }, 0);
 
       const totalrevenue = api
         .column(2)
         .data()
         .reduce((a, b) => {
           return intVal(a) + intVal(b);
-        });
+        }, 0);
 
       const totalearning = api
         .column(3)
         .data()
         .reduce((a, b) => {
           return intVal(a) + intVal(b);
-        });
+        }, 0);
 
       $(api.column(0).footer()).html("Total");
       $(api.column(1).footer()).html(
@@ -329,8 +331,7 @@ function actions(data, value, row) {
     class="btn btn-success btn-circle"><i
         class="fas fa-fw fa-info-circle"></i></button>
 
-<button onclick="window.location.pathname = '${path}/delete/${data}'"
-${role == 1 ? "" : row.operator == user ? "" : "disabled"}
+<button ${role == 1 ? "" : row.operator == user ? "" : "disabled"}
     class="btn btn-danger btn-circle"
     data-toggle="modal"
     data-target="#deleteModal${data}"><i
@@ -356,7 +357,11 @@ ${role == 1 ? "" : row.operator == user ? "" : "disabled"}
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button"
                     data-dismiss="modal">No</button>
-                <a class="btn btn-primary"
+                <a class="btn btn-primary" ${
+                  path == "/purchases" || path == "/sales"
+                    ? `onclick="socket.emit('updatenotif', {})"`
+                    : ""
+                } 
                     href="${path}/delete/${data}">Yes</a>
             </div>
         </div>
