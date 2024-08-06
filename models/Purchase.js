@@ -111,7 +111,7 @@ class Purchase {
   static async getLast() {
     try {
       const data = await db.query(
-        "SELECT * FROM purchases ORDER BY invoice DESC LIMIT 1"
+        "SELECT * FROM purchases ORDER BY time DESC LIMIT 1"
       );
       return data.rows[0].invoice;
     } catch (e) {

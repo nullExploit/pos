@@ -97,13 +97,13 @@ if (path.includes("/purchases/edit")) {
         }),
       });
       drawTable();
-      document.getElementById("inputStock").value -= Number(
-        inputQuantity.value
-      );
+      document.getElementById("inputStock").value =
+        Number(document.getElementById("inputStock").value) +
+        Number(inputQuantity.value);
       socket.emit("addnotif", {
         stock: Number(document.getElementById("inputStock").value),
       });
-      if (notif) getNotification()
+      if (notif) getNotification();
     }
   }
 
@@ -177,20 +177,14 @@ if (path.includes("/purchases/edit")) {
                 ? Number(data.totalprice).toLocaleString("in")
                 : Number(data.totalprice).toLocaleString("in") + ",00"
             }`}</td>
-            ${
-              path.split("")[path.length - 1] != "/"
-                ? `
                 <td>
                     <a href="/purchases/deleteitems/${
                       document.getElementById("inputInvoice").value
                     }/${Number(
-                    data.id
-                  )}" onclick="socket.emit('updatenotif', {})" class="btn btn-danger btn-circle">
+        data.id
+      )}" onclick="socket.emit('updatenotif', {})" class="btn btn-danger btn-circle">
                   <i class="fas fa-fw fa-trash"></i></a>
                 </td>    
-            `
-                : ""
-            }
         </tr>
         `;
     });
@@ -227,6 +221,6 @@ if (path.includes("/purchases/edit")) {
       }),
     }).then((data) => data.json());
 
-    window.location.pathname = `/purchases/edit/${data.invoice}/`;
+    window.location.pathname = `/purchases/edit/${data.invoice}`;
   }
 }

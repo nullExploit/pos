@@ -119,7 +119,7 @@ class Sale {
   static async getLast() {
     try {
       const data = await db.query(
-        "SELECT * FROM sales ORDER BY invoice DESC LIMIT 1"
+        "SELECT * FROM sales ORDER BY time DESC LIMIT 1"
       );
       return data.rows[0].invoice;
     } catch (e) {
@@ -162,7 +162,6 @@ class Sale {
       const queryParams = [];
       const params = [];
       const monthsData = [];
-      const tableReport = [];
       let monthsLabel = [];
 
       let sql = "SELECT COUNT(*) AS totalcount FROM sales";
@@ -256,7 +255,16 @@ class Sale {
     }
   }
 
-  static async dashboardApi(month, page, limit, offset, sortBy, sortMode) {
+  static async dashboardApi(
+    month,
+    page,
+    limit,
+    offset,
+    sortBy,
+    sortMode,
+    startdate,
+    enddate
+  ) {
     const queryParams = [];
     const params = [];
     let sql = "SELECT COUNT(*) AS total FROM earning()";
@@ -272,6 +280,19 @@ class Sale {
       );
 
       params.push(month, month, month, month);
+    }
+
+    if (startdate && enddate) {
+      queryParams.push(
+        `date BETWEEN $${queryParams.length + 1} AND $${queryParams.length + 2}`
+      );
+      params.push(startdate, enddate);
+    } else if (startdate) {
+      queryParams.push(`date >= $${queryParams.length + 1}`);
+      params.push(startdate.slice(0, 7));
+    } else if (enddate) {
+      queryParams.push(`date <= $${queryParams.length + 1}`);
+      params.push(enddate.slice(0, 7));
     }
 
     if (queryParams.length) sql += ` WHERE ${queryParams.join(" OR ")}`;
@@ -306,7 +327,12 @@ class Sale {
     }
 
     const total = await db.query(sql, params);
-    const report = await db.query("SELECT month, expense, revenue, earning FROM earning()")
+    const report = await db.query(
+      `SELECT month, expense, revenue, earning FROM earning() 
+      ${startdate || enddate ? `WHERE` : ``} 
+      ${startdate ? `date >= '${startdate.slice(0, 7)}'` : ``} 
+      ${enddate ? `date <= '${enddate.slice(0, 7)}'` : ``}`
+    );
 
     return {
       report: report.rows,

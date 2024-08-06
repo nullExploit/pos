@@ -221,7 +221,7 @@ function forDashboard() {
   $("#dataTable").DataTable({
     processing: true,
     serverSide: true,
-    ajax: "/dashboard/api",
+    ajax: `/dashboard/api${window.location.search}`,
     columns: [
       { data: "month" },
       {

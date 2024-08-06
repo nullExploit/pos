@@ -86,7 +86,8 @@ router.get("/dashboard", hasSession, checkRole, async (req, res) => {
 });
 
 router.get("/dashboard/api", hasSession, checkRole, async (req, res) => {
-  const { draw, length, start, search, columns, order } = req.query;
+  const { draw, length, start, search, columns, order, startdate, enddate } =
+    req.query;
 
   const data = await Sale.dashboardApi(
     search?.value,
@@ -94,7 +95,9 @@ router.get("/dashboard/api", hasSession, checkRole, async (req, res) => {
     length,
     start,
     columns ? columns[req.query.order[0].column].data : "date",
-    order ? order[0].dir : "asc"
+    order ? order[0].dir : "asc",
+    startdate,
+    enddate
   );
 
   res.json(data);
